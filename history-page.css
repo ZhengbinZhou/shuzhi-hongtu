@@ -1,0 +1,207 @@
+:root{--red:#851f25;--deep:#5b1117;--ink:#291d1a;--gold:#bc8a42;--paper:#f7f0e4;--cream:#fffaf1;--line:#dfd0bc}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}a{color:inherit;text-decoration:none}
+.history-topbar{height:74px;padding:0 max(28px,50vw - 620px);display:flex;align-items:center;justify-content:space-between;background:#fffaf1f2;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.history-brand{display:flex;align-items:center;gap:11px}.history-brand i{display:grid;place-items:center;width:38px;height:38px;background:var(--red);color:white;font:700 20px serif;font-style:normal}.history-brand span{display:flex;flex-direction:column}.history-brand b{font:700 19px "Noto Serif SC",serif;letter-spacing:.1em}.history-brand small{color:#8d786d;font-size:9px;margin-top:3px}.history-back{font-size:12px;border-bottom:1px solid #8d786d;padding-bottom:4px}
+.history-hero{padding:82px max(32px,50vw - 620px) 55px;background:radial-gradient(circle at 78% 18%,#851f2512,transparent 25%),linear-gradient(135deg,#fffaf1,#efe0cc)}
+.history-hero__eyebrow{color:var(--red);letter-spacing:.25em;font-size:10px}.history-hero h1{margin:15px 0 20px;font:700 clamp(34px,4vw,56px)/1.3 "Noto Serif SC",serif}.history-hero p{max-width:740px;color:#6f5d54;line-height:2;font-size:14px;margin:0}.history-status{display:inline-block;margin-top:24px;padding:8px 11px;border:1px solid #caa77c;color:var(--red);font-size:10px;background:#fffaf1c9}
+.history-shell{max-width:1240px;margin:auto;padding:60px 32px 92px}.history-shell__head{display:flex;align-items:end;justify-content:space-between;margin-bottom:26px}.history-shell__head small{color:var(--red);letter-spacing:.2em}.history-shell__head h2{margin:8px 0 0;font:700 30px "Noto Serif SC",serif}.history-shell__head p{color:#8a776d;font-size:11px}
+.history-scroll-frame{position:relative;margin:20px 30px 0;background:linear-gradient(90deg,#d6b988,#f5e5c8 3%,#f8ead0 50%,#f1ddbd 97%,#c9a36f);border:1px solid #b78b52;box-shadow:0 20px 45px #40240f20,inset 0 0 35px #8c5c2626}
+.history-scroll-frame:before,.history-scroll-frame:after{content:"";position:absolute;z-index:3;top:-20px;bottom:-20px;width:26px;border:1px solid #67401f;border-radius:14px;background:linear-gradient(90deg,#69401d,#bc8244 42%,#70431f);box-shadow:0 7px 15px #2d190b35}
+.history-scroll-frame:before{left:-28px}.history-scroll-frame:after{right:-28px}
+.history-chapters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden}
+.timeline-stage{appearance:none;border:0;border-right:1px solid #b992624f;background:transparent;color:var(--ink);padding:0;text-align:left;cursor:pointer;min-width:0;transition:background .22s,transform .22s,box-shadow .22s;position:relative}
+.timeline-stage:last-child{border-right:0}.timeline-stage:hover{background:#fff8e87a}.timeline-stage.is-active{z-index:2;background:#fff9ea;box-shadow:inset 0 -4px 0 var(--red),0 0 25px #4f2a111f}
+.timeline-stage__head{display:grid;grid-template-columns:46px 1fr;gap:10px;align-items:center;padding:18px 18px 12px;border-bottom:1px solid #ba93634a}
+.timeline-stage__head>b{color:var(--red);font:700 26px/1 Georgia,serif}.timeline-stage__head span{min-width:0}.timeline-stage__head strong{display:block;font:700 17px/1.25 "Noto Serif SC","Songti SC",serif}.timeline-stage__head small{display:block;margin-top:5px;color:#94745a;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.timeline-stage__body{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(92px,.85fr);min-height:258px}
+.timeline-stage figure{margin:0;position:relative;overflow:hidden;background:#d9c19d}.timeline-stage figure:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 25px #34200d45;pointer-events:none}.timeline-stage img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.88) contrast(1.03);transition:transform .4s}.timeline-stage:hover img{transform:scale(1.025)}
+.timeline-stage figcaption{position:absolute;left:9px;bottom:8px;z-index:1;color:#fff;background:#321a13c9;padding:5px 7px;font-size:8px;letter-spacing:.08em}
+.timeline-stage__verse{position:relative;display:flex;flex-direction:column;justify-content:center;padding:15px 9px 14px 13px;background:linear-gradient(145deg,#fff9eb,#ead4ae);overflow:hidden}
+.timeline-stage__verse:before{content:"";position:absolute;inset:7px;border:1px solid #946f3a29;pointer-events:none}.timeline-stage__verse em{position:relative;z-index:1;color:#351d18;font:400 18px/1.75 "STKaiti","KaiTi","FangSong",serif;font-style:normal;letter-spacing:.02em}.timeline-stage__verse em span{display:block}.timeline-stage__verse small{position:relative;z-index:1;color:#886d5c;margin-top:9px;font-size:8px;line-height:1.5}
+.timeline-stage__verse i{position:absolute;right:9px;bottom:9px;z-index:1;width:31px;height:31px;border:2px solid #9e2425;color:#9e2425;display:grid;place-items:center;font:700 11px/1 "STKaiti","KaiTi",serif;font-style:normal;transform:rotate(-5deg);box-shadow:inset 0 0 0 2px #fff0dd}
+.history-current{display:flex;justify-content:space-between;align-items:center;gap:28px;margin:30px 0 0;padding:22px 25px;background:#fffaf1;border:1px solid var(--line);border-top:3px solid var(--red)}
+.history-current small{color:var(--red);letter-spacing:.17em;font-size:9px}.history-current h3{margin:7px 0 6px;font:700 21px/1.5 "Noto Serif SC",serif}.history-current p{margin:0;color:#847168;font-size:10px}.history-current>span{max-width:200px;color:#907860;text-align:right;font-size:9px;line-height:1.7}
+.history-next{margin-top:18px;border-left:3px solid var(--red);padding:15px 18px;background:#efe3d3;color:#725e55;font-size:11px}
+@media(max-width:1050px){.history-chapters{grid-template-columns:repeat(4,310px);overflow-x:auto;scroll-snap-type:x mandatory}.timeline-stage{min-width:310px;scroll-snap-align:start}.history-scroll-frame{margin-left:26px;margin-right:26px}}
+@media(max-width:760px){.history-hero{padding:60px 22px 42px}.history-shell{padding:45px 18px 68px}.history-shell__head{align-items:flex-start;flex-direction:column}.history-topbar{padding:0 18px}.history-scroll-frame{margin-left:22px;margin-right:22px}.history-scroll-frame:before,.history-scroll-frame:after{width:19px}.history-scroll-frame:before{left:-21px}.history-scroll-frame:after{right:-21px}.history-chapters{grid-template-columns:repeat(4,290px)}.timeline-stage{min-width:290px}.history-current{align-items:flex-start;flex-direction:column}.history-current>span{text-align:left}}
+
+/* Historical chapter content */
+.history-status{margin-top:6px}.timeline-stage__calligraphy{position:relative;z-index:1;width:100%;height:178px!important;object-fit:contain!important;filter:none!important;transform:none!important}.timeline-stage:hover .timeline-stage__calligraphy{transform:none!important}.timeline-stage__verse small{margin-top:7px}.history-stage-content:empty{display:none}.chapter-detail{margin-top:52px}.chapter-masthead{display:grid;grid-template-columns:88px 1fr;gap:28px;padding:0 4px 32px;border-bottom:1px solid #cbb89e}.chapter-masthead>span{color:var(--red);font:700 68px/.9 Georgia,serif;opacity:.85}.chapter-masthead small,.section-title small{color:var(--red);letter-spacing:.2em;font-size:9px}.chapter-masthead h2{margin:8px 0 13px;font:700 clamp(24px,3vw,37px)/1.45 "Noto Serif SC",serif}.chapter-masthead p{max-width:940px;margin:0;color:#6f5d54;font-size:13px;line-height:2}.chapter-core{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:26px;margin-top:30px}.route-map,.event-ledger{background:#fffaf1;border:1px solid #cbb89e}.route-map{padding:20px}.route-map__label{display:flex;align-items:end;justify-content:space-between;border-bottom:2px solid #2f231f;padding-bottom:11px}.route-map__label small{font:700 8px Georgia,serif;letter-spacing:.16em;color:var(--red)}.route-map__label strong{font:700 16px "Noto Serif SC",serif}.route-map__canvas{height:390px;margin-top:13px;position:relative;overflow:hidden;background:repeating-linear-gradient(0deg,#efe2ca 0,#efe2ca 2px,#f8eedc 2px,#f8eedc 5px);border:1px solid #3f3028}.route-map__canvas:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,#23171318 0 1px,transparent 1.5px);background-size:8px 8px;mix-blend-mode:multiply;pointer-events:none}.route-map__land{position:absolute;inset:7% 8%;background:#d9c29a;clip-path:polygon(6% 30%,20% 13%,44% 8%,59% 18%,85% 8%,96% 29%,86% 50%,94% 73%,75% 92%,53% 84%,32% 95%,14% 76%,20% 55%,3% 48%);border:2px solid #2b201b;box-shadow:inset 0 0 0 8px #7f1f2212}.route-map svg{position:absolute;inset:0;width:100%;height:100%;z-index:2}.route-map polyline{fill:none;stroke:#8d2124;stroke-width:1.8;stroke-dasharray:2.3 2;stroke-linecap:round;stroke-linejoin:round}.route-node{position:absolute;z-index:3;left:var(--x);top:var(--y);transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap}.route-node i{width:13px;height:13px;border:3px solid #fff4df;background:var(--red);box-shadow:0 0 0 2px #2f231f;border-radius:50%}.route-node b{margin-top:5px;padding:2px 5px;background:#fff6e8e8;font:700 12px "Noto Serif SC",serif}.route-node small{padding:1px 4px;background:#fff6e8e8;color:#6b5142;font-size:7px}.route-map__north{position:absolute;right:12px;top:12px;z-index:3;width:26px;height:26px;border:1px solid #2e211c;display:grid;place-items:center;font:700 10px Georgia,serif}.route-map>p{margin:12px 0 0;color:#806c60;font-size:9px;line-height:1.7}.event-ledger{padding:21px 24px}.section-title{display:flex;align-items:end;justify-content:space-between;border-bottom:1px solid #cbb89e;padding-bottom:12px}.section-title h3{margin:0;font:700 22px "Noto Serif SC",serif}.event-ledger ol{list-style:none;padding:0;margin:7px 0 0}.event-ledger li{display:grid;grid-template-columns:66px 1fr;gap:13px;padding:15px 0;border-bottom:1px dashed #cfbea5}.event-ledger li:last-child{border-bottom:0}.event-ledger time{color:var(--red);font:700 13px Georgia,serif}.event-ledger h4{margin:0 0 5px;font:700 14px "Noto Serif SC",serif}.event-ledger p{margin:0;color:#78665c;font-size:10px;line-height:1.7}.chapter-spots{margin-top:45px}.history-spot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:18px}.history-spot-card{display:block;background:#fffaf1;border:1px solid var(--line);transition:transform .2s,box-shadow .2s}.history-spot-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px #4a2a1720}.history-spot-card>img{display:block;width:100%;height:156px;object-fit:cover}.history-spot-card>span{display:block;padding:14px 14px 15px}.history-spot-card small{display:block;color:var(--red);font-size:8px;letter-spacing:.08em}.history-spot-card strong{display:block;min-height:42px;margin-top:6px;font:700 14px/1.5 "Noto Serif SC",serif}.history-spot-card em{display:block;margin-top:8px;color:#806b5e;font-size:9px;font-style:normal}.history-quiz{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;margin-top:42px;padding:25px 28px;background:#2f241f;color:#fff8ea;border-top:4px solid var(--red)}.history-quiz small{color:#d6aa68;letter-spacing:.18em}.history-quiz h3{margin:8px 0 0;font:700 18px/1.65 "Noto Serif SC",serif}.history-quiz p{margin:14px 0 0;padding-top:14px;border-top:1px solid #fff3da26;color:#e5d7c5;font-size:11px;line-height:1.9}.history-quiz__actions{display:flex;gap:8px}.history-quiz button{border:1px solid #d2b180;background:transparent;color:#fff6e6;padding:10px 13px;cursor:pointer;font:inherit;font-size:10px}.history-quiz button:last-child{background:#8b2327;border-color:#8b2327}
+@media(max-width:900px){.chapter-core{grid-template-columns:1fr}.history-spot-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.chapter-masthead{grid-template-columns:1fr;gap:14px}.chapter-masthead>span{font-size:45px}.route-map__canvas{height:330px}.history-quiz{grid-template-columns:1fr}.history-quiz__actions{justify-content:flex-start}}
+@media(max-width:520px){.history-spot-grid{grid-template-columns:1fr}.route-node b{font-size:10px}.route-node small{display:none}.route-map{padding:14px}.event-ledger{padding:18px}.history-quiz{padding:22px 20px}}
+
+/* Period-specific maps */
+.route-map__image{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:saturate(.88) contrast(1.03);
+}
+.map-pin{
+  position:absolute;
+  z-index:4;
+  left:var(--x);
+  top:var(--y);
+  transform:translate(-50%,-50%);
+}
+.map-pin i,.route-map__legend i{
+  display:grid;
+  place-items:center;
+  width:22px;
+  height:22px;
+  border:2px solid #fff4df;
+  border-radius:50%;
+  background:#8d2124;
+  color:#fff8ea;
+  box-shadow:0 0 0 2px #2f231f,0 4px 10px #2c17165c;
+  font:700 10px/1 Georgia,serif;
+  font-style:normal;
+}
+.route-map--field-sketch .map-pin i,.route-map--field-sketch .route-map__legend i{
+  background:#31536a;
+  box-shadow:0 0 0 2px #263b49,0 4px 10px #15273355;
+}
+.route-map__legend{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px 14px;
+  list-style:none;
+  margin:14px 0 0;
+  padding:0;
+}
+.route-map__legend li{
+  display:grid;
+  grid-template-columns:25px 1fr;
+  gap:8px;
+  align-items:center;
+  min-width:0;
+}
+.route-map__legend i{
+  width:19px;
+  height:19px;
+  border-width:1px;
+  box-shadow:none;
+  font-size:8px;
+}
+.route-map__legend b,.route-map__legend small{display:block}
+.route-map__legend b{
+  overflow:hidden;
+  color:#49372f;
+  font:700 9px/1.45 "Noto Serif SC",serif;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.route-map__legend small{color:#8a7568;font-size:7px;line-height:1.4}
+.route-map__north{background:#fff6e0d9}
+.route-map--field-sketch .route-map__label{border-color:#31536a}
+.route-map--field-sketch .route-map__label small{color:#31536a}
+.route-map--ink-archive .route-map__image{filter:sepia(.16) saturate(.72) contrast(1.08)}
+.route-map--ink-archive .route-map__label{border-color:#4b352b}
+.route-map--ink-archive .route-map__label small{color:#8d2124}
+.route-map--ink-archive .map-pin i,.route-map--ink-archive .route-map__legend i{
+  background:#9a302b;
+  box-shadow:0 0 0 2px #4b352b,0 4px 10px #3c211c55;
+}
+.route-map--oil-march .route-map__image{filter:saturate(.82) contrast(1.04) brightness(.92)}
+.route-map--oil-march .route-map__label{border-color:#69482c}
+.route-map--oil-march .route-map__label small{color:#a0472c}
+.route-map--oil-march .map-pin i,.route-map--oil-march .route-map__legend i{
+  background:#a3472e;
+  box-shadow:0 0 0 2px #5b3b24,0 4px 10px #2d1c155e;
+}
+@media(max-width:520px){
+  .route-map__legend{grid-template-columns:1fr}
+  .map-pin i{width:18px;height:18px;font-size:8px}
+}
+
+/* Spot linking and route selection */
+.map-pin{text-decoration:none}
+.route-map__legend li{display:block}
+.route-map__legend li>a{
+  display:grid;
+  grid-template-columns:25px 1fr;
+  gap:8px;
+  align-items:center;
+  min-width:0;
+  padding:3px;
+  color:inherit;
+  text-decoration:none;
+  transition:background .18s,transform .18s;
+}
+.route-map__legend li>a:hover{background:#8d21240b;transform:translateX(2px)}
+.history-plan-open{
+  flex:0 0 auto;
+  border:1px solid var(--red);
+  background:var(--red);
+  color:#fff8ec;
+  padding:11px 16px;
+  cursor:pointer;
+  font:700 11px "Noto Serif SC",serif;
+  letter-spacing:.08em;
+}
+.history-route-dialog{
+  width:min(760px,calc(100vw - 32px));
+  max-height:calc(100vh - 36px);
+  padding:0;
+  overflow:auto;
+  border:0;
+  background:#f8edda;
+  color:#352721;
+  box-shadow:0 28px 90px #180d0a66;
+}
+.history-route-dialog::backdrop{background:#241714b8;backdrop-filter:blur(3px)}
+.route-prep{border:1px solid #8c6d52;padding:25px}
+.route-prep>header{display:flex;justify-content:space-between;gap:24px;padding-bottom:18px;border-bottom:2px solid #7e2225}
+.route-prep>header small,.route-prep>section>small{color:var(--red);font-size:8px;letter-spacing:.17em}
+.route-prep>header h2{margin:7px 0 5px;font:700 25px/1.45 "Noto Serif SC",serif}
+.route-prep>header p{margin:0;color:#7e6b60;font-size:10px}
+.route-prep>header button{align-self:flex-start;width:34px;height:34px;border:1px solid #846b5d;background:transparent;color:#5d4439;cursor:pointer;font-size:21px}
+.route-prep>section{margin-top:22px}
+.route-prep__spots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 12px;margin-top:10px}
+.route-prep__spots a{display:flex;align-items:center;gap:8px;min-width:0;padding:8px 9px;border:1px solid #d4c0a5;background:#fff9ef;color:#49372f;text-decoration:none;font-size:10px;line-height:1.4}
+.route-prep__spots a:hover{border-color:#8c282a;color:#8c282a}
+.route-prep__spots i{display:grid;place-items:center;flex:0 0 19px;height:19px;border-radius:50%;background:#8c282a;color:#fff;font:700 8px Georgia,serif;font-style:normal}
+.route-prep__settings{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.route-prep__choice{padding:13px 14px;border:1px solid #b9a68e;background:#efe1cd;color:#675249;font-size:10px}
+.route-prep__choice>span{display:block;margin-bottom:10px;color:#6e5548;font-weight:700}
+.route-prep__options{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.route-prep__options button{border:1px solid #b6a189;background:#fff9ef;color:#5d483d;padding:9px 8px;cursor:pointer;font:600 10px "Noto Serif SC",serif;transition:.18s}
+.route-prep__options button:hover{border-color:#8c282a;color:#8c282a}
+.route-prep__options button.is-active{border-color:#8c282a;background:#8c282a;color:#fff8ec;box-shadow:inset 0 0 0 1px #fff5df40}
+.route-prep__spots a{opacity:.52}
+.route-prep__spots a.is-route-selected{opacity:1;border-color:#9b6c51;background:#fffaf0;box-shadow:inset 3px 0 #8c282a}
+.route-prep__selection{display:flex;align-items:center;gap:12px;margin-top:12px;padding:10px 13px;background:#8c282a0b;border-left:3px solid #8c282a;color:#705a4e;font-size:9px;line-height:1.5}
+.route-prep__selection b{flex:0 0 auto;color:#8c282a;font:700 11px "Noto Serif SC",serif}
+.route-prep>footer{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;margin-top:24px;padding-top:18px;border-top:1px solid #c9b398}
+.route-prep>footer p{margin:0;color:#756258;font-size:9px;line-height:1.7}
+.route-prep>footer button{padding:10px 13px;border:1px solid #80695c;background:transparent;color:#46362f;cursor:pointer;font:inherit;font-size:9px}
+.route-prep>footer [data-route-submit]{border-color:#8c282a;background:#8c282a;color:#fff8ec;font-weight:700}
+.route-prep>footer button:disabled{border-color:#c3b4a2;background:#dfd2c1;color:#9b8d7d;cursor:not-allowed}
+@media(max-width:760px){
+  .history-plan-open{width:100%}
+  .route-prep{padding:19px}
+  .route-prep__spots,.route-prep__settings{grid-template-columns:1fr}
+  .route-prep>footer{grid-template-columns:1fr 1fr}
+  .route-prep>footer p{grid-column:1/-1}
+}
+
+/* Source notes and final publication details */
+.history-hero blockquote{max-width:760px;margin:0;color:#5f4e46;font:500 16px/1.9 "Noto Serif SC",serif}
+.history-hero blockquote cite{display:block;margin-top:5px;color:#8b7569;font:400 9px/1.7 sans-serif;font-style:normal}
+.chapter-title-source{margin:0 0 13px!important;color:#927865!important;font-size:9px!important;line-height:1.6!important}
+.chapter-sources{margin-top:24px;padding:20px 23px;border:1px solid #d4c1a7;background:#fffaf1}
+.chapter-sources>small{color:var(--red);letter-spacing:.18em;font-size:8px}
+.chapter-sources h3{margin:7px 0 12px;font:700 16px "Noto Serif SC",serif}
+.chapter-sources ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 18px;margin:0;padding-left:18px}
+.chapter-sources a{color:#72594b;border-bottom:1px solid #bca587;font-size:9px;line-height:1.7}
+.chapter-sources a:hover{color:var(--red)}
+@media(max-width:760px){.chapter-sources ul{grid-template-columns:1fr}}
+
+/* Chapter quotations replace mechanical statistics and map disclaimers. */
+.history-current blockquote{margin:5px 0 0;color:#6f5b50;font:500 12px/1.85 "Noto Serif SC",serif}
+.history-current blockquote cite{display:inline;margin-left:8px;color:#967d6b;font:400 9px/1.7 sans-serif;font-style:normal}
+.route-map__quote{margin:0!important;padding:15px 18px!important;border-top:1px solid #d6c3a8;background:#fff8ed;color:#624b40!important;font:500 12px/1.8 "Noto Serif SC",serif!important}
+.route-map__quote cite{display:block;margin-top:3px;color:#917663;font:400 8px/1.6 sans-serif;font-style:normal}
