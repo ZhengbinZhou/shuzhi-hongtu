@@ -1,0 +1,48 @@
+.history-nav-link{color:var(--red)!important}
+.history-entry{color:var(--ink);background:linear-gradient(120deg,#f4e8d6,#fffaf1 48%,#ead6bc);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:54px max(32px,50vw - 620px);position:relative;overflow:hidden}
+.history-entry:after{content:"";position:absolute;width:360px;height:360px;border:1px solid #851f2518;border-radius:50%;right:4%;top:-155px;box-shadow:0 0 0 46px #851f2505,0 0 0 92px #851f2504}
+.history-entry__head{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:end;gap:32px}
+.history-entry__eyebrow{color:var(--red);letter-spacing:.24em;font-size:10px}
+.history-entry h2{margin:10px 0 12px;font:700 clamp(25px,2.8vw,39px)/1.35 "Noto Serif SC",serif}
+.history-entry p{color:#766159;max-width:720px;margin:0;font-size:12px;line-height:1.9}
+.history-entry__link{flex:none;color:#fff;background:var(--red);padding:13px 20px;font-size:12px;box-shadow:0 10px 24px #5b111725}
+.history-entry__chapters{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);margin-top:30px;border:1px solid #cdb58f;background:#fffaf1c9}
+.history-entry__chapters span{padding:17px 16px;border-right:1px solid #dcc9ac}
+.history-entry__chapters span:last-child{border-right:0}
+.history-entry__chapters b{display:block;color:var(--red);font:700 17px serif;margin-bottom:6px}
+.history-entry__chapters small{font:600 12px "Noto Serif SC",serif}
+.history-transfer{margin:18px max(20px,50vw - 620px) 0;padding:16px 18px;border:1px solid #c8ad84;border-left:4px solid var(--red);background:linear-gradient(105deg,#fffaf1,#f1e2cc);color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:24px;box-shadow:0 10px 30px #4c2a1612}
+.history-transfer small{display:block;color:var(--red);font-size:9px;letter-spacing:.15em}
+.history-transfer strong{display:block;margin-top:4px;font:700 17px "Noto Serif SC",serif}
+.history-transfer p{margin:5px 0 0;color:#746058;font-size:10px;line-height:1.6}
+.history-transfer__actions{flex:0 0 auto;text-align:right}
+.history-transfer__actions span{display:block;color:#7b675d;font-size:9px;margin-bottom:8px}
+.history-transfer__actions a{display:inline-block;padding:8px 11px;border:1px solid #9d7a61;color:var(--red);font-size:9px;text-decoration:none}
+.history-planning-mode #planner .choice-row{display:none}
+.history-planning-mode #planner .planner:before{content:"本章所选点位将全部进入行程；日期与天数用于安排每日游览次序。";display:block;margin:0 0 22px;padding:11px 13px;border-left:3px solid var(--red);background:#8c282a0b;color:#735d51;font-size:10px;line-height:1.7}
+.history-plan-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
+.history-plan-facts span{padding:11px 12px;border:1px solid #ddcdb8;background:#f1e8db;color:#7a675d;font-size:9px}
+.history-plan-facts b{display:block;margin-top:5px;color:#4e3931;font:700 13px "Noto Serif SC",serif}
+.history-planning-mode #results{display:none!important}
+.history-results{display:block!important}
+.history-custom-map{margin-top:20px}
+.history-custom-map svg{height:360px}
+.history-custom-map .map-marker text{font-size:3.2px;font-weight:800}
+.history-custom-map .north-arrow text{font-size:3px}
+.history-route-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;margin:0;padding:13px;list-style:none;background:#f8f0e4;border-top:1px solid #dacbb6}
+.history-route-legend li{display:flex;align-items:center;gap:8px;min-width:0;padding:6px 8px;background:#fff9ef;border:1px solid #dfcfb9}
+.history-route-legend i,.history-stop>i{display:grid;place-items:center;flex:0 0 20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font:700 9px Georgia,serif;font-style:normal}
+.history-route-legend span{min-width:0}
+.history-route-legend b,.history-route-legend small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.history-route-legend b{font:600 9px "Noto Serif SC",serif}
+.history-route-legend small{color:#8a776b;margin-top:2px;font-size:7px}
+.history-stop>span{flex:1;min-width:0}
+.history-stop>span small,.history-stop>span b{display:block}
+.history-stop>span small{color:#8b786e;font-size:8px}
+.history-stop>span b{margin-top:4px;font:600 12px "Noto Serif SC",serif}
+.history-stop>a{border:1px solid #cdbca7;padding:7px 9px;color:var(--red);font-size:8px;text-decoration:none}
+.history-route-warning{margin:16px 0;padding:10px 12px;border-left:3px solid #c78c38;background:#c78c3814;color:#7b5629;font-size:9px;line-height:1.7}
+.history-results .plan-actions{justify-content:flex-end}
+.history-results .plan-actions span{font-size:9px}
+@media (max-width:760px){.history-entry__head{align-items:flex-start;flex-direction:column}.history-entry__chapters{grid-template-columns:1fr 1fr}.history-entry__chapters span:nth-child(2){border-right:0}.history-entry__chapters span{border-bottom:1px solid #dcc9ac}.history-entry__link{align-self:flex-start}}
+@media (max-width:760px){.history-transfer{align-items:flex-start;flex-direction:column}.history-transfer__actions{text-align:left}.history-transfer__actions span{margin-bottom:8px}}

@@ -28,7 +28,28 @@ test("standalone HTML embeds all 44 landmark images", () => {
 test("standalone HTML can launch directly from the file protocol", () => {
   assert.doesNotMatch(html, /process\.env\.NODE_ENV/);
   assert.doesNotMatch(html, /<script type=["']module["']/);
-  assert.match(html, /<script>\(function\(\)/);
+  assert.match(html, /<script>window\.addEventListener\("DOMContentLoaded"/);
   assert.match(html, /<style>[\s\S]*\.hero[\s\S]*<\/style>/);
   assert.match(html, /<div id="root"><\/div>/);
+});
+
+test("history trail companion page and assets are complete", () => {
+  const requiredFiles = [
+    "history.html",
+    "history-data.js",
+    "history-entry.js",
+    "history-entry.css",
+    "history-page.js",
+    "history-page.css",
+  ];
+  for (const name of requiredFiles) {
+    assert.ok(fs.existsSync(path.join(projectRoot, name)), `${name} is missing`);
+  }
+
+  const historyData = fs.readFileSync(path.join(projectRoot, "history-data.js"), "utf8");
+  const assetPaths = [...historyData.matchAll(/important\/([A-Za-z0-9._-]+)/g)].map((match) => match[1]);
+  assert.ok(assetPaths.length > 0);
+  for (const name of new Set(assetPaths)) {
+    assert.ok(fs.existsSync(path.join(projectRoot, "important", name)), `important/${name} is missing`);
+  }
 });
