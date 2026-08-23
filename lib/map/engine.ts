@@ -1,10 +1,10 @@
-// 地图引擎开关：svg（默认，离线兜底）| tdt（天地图）。
-// 由 VITE_MAP_ENGINE 控制；未配置或非 tdt 时一律用 SVG，保证离线/无 Key 可用。
+// 地图引擎开关：tdt（默认，天地图）| svg（离线兜底）。
+// 浏览器端天地图 key 从环境变量读取，避免提交到公开代码仓库。
 export type MapEngine = "svg" | "tdt";
 
 export function getMapEngine(): MapEngine {
-  const v = (import.meta.env?.VITE_MAP_ENGINE ?? "svg").toString().toLowerCase();
-  return v === "tdt" ? "tdt" : "svg";
+  const v = (import.meta.env?.VITE_MAP_ENGINE ?? "tdt").toString().toLowerCase();
+  return v === "svg" ? "svg" : "tdt";
 }
 
 export function getTiandituTk(): string {
