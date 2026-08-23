@@ -1769,3 +1769,15 @@ footer nav a:hover{color:#a71911}
   text-overflow:clip!important;
   white-space:nowrap!important;
 }
+
+/* Contrast fixes for small text on red surfaces */
+.travel-chip input:checked+span b{
+  color:#fff!important;
+}
+.travel-chip input:checked+span small{
+  color:rgba(255,255,255,.84)!important;
+}
+.landmark-detail .landmark-cover .kicker{
+  color:#ffd9b3!important;
+  text-shadow:0 1px 12px rgba(0,0,0,.18);
+}
