@@ -21,7 +21,7 @@ for (const imageName of fs.readdirSync(path.join(projectRoot, "public/landmarks"
   if (!imageName.endsWith(".webp")) continue;
   const source = fs.readFileSync(path.join(projectRoot, "public/landmarks", imageName));
   const dataUri = `data:image/webp;base64,${source.toString("base64")}`;
-  js = js.replaceAll(`/landmarks/${imageName}`, dataUri);
+  js = js.replaceAll(`/landmarks/${imageName}`, dataUri).replaceAll(`./landmarks/${imageName}`, dataUri);
 }
 
 html = html

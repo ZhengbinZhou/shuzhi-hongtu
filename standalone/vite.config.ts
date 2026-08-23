@@ -6,6 +6,11 @@ export default defineConfig({
   root: __dirname,
   base: "./",
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, ".."),
+    },
+  },
   define: {
     "process.env.NODE_ENV": JSON.stringify("production"),
   },

@@ -1,108 +1,236 @@
-# vinext-starter
+# 数智-红途
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+数智-红途是一个聚焦江西省红色旅游资源的红色文旅智能导览平台。当前版本以网页原型为主，围绕江西全省 44 个红色点位，根据用户的出发县区、出发日期、游览天数、学习主题、体验偏好和实践目的，生成可解释、可调整的红色旅游路线。
 
-## Prerequisites
+线上演示地址：
 
-- Node.js `>=22.13.0`
-- Linux with `flock`, `curl`, and GNU `timeout`
+https://shujing-hongtu-jiangxi.eddiemarxfrancelyon.chatgpt.site
 
-## Sites Lifecycle
+> 说明：当前线上站点为 ChatGPT Site 发布版本，访问权限可能受站点设置影响。若无法访问，可以使用项目根目录下的 `数智-红途-离线完整版.html` 直接打开演示。
 
-The Sites lifecycle CLI runs the locked dependency install before returning this checkout. Edit the source under `app/`, then checkpoint when a coherent milestone is ready to inspect or share. The remote Sites builder runs `npm run build` against the pushed commit. Do not repeat install or build as a normal pre-checkpoint step.
+## 项目定位
 
-This starter does not use `wrangler.jsonc`.
+当前版本主要展示：
 
-`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout and then validates the Sites artifact. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
+- 江西红色文旅点位资源库
+- 智能路线生成与推荐
+- 路线地图展示
+- 点位详情查看
+- 路线顺序调整、替换、删除
+- 本地浏览器保存路线
+- 单文件离线版演示
 
-Scripts that need writable project-scoped home, npm, XDG, and temporary paths use `scripts/sites-env.sh`. The `dev` and `start` scripts honor the caller's runtime environment and keep Wrangler logs inside the checkout. The generated `.sites-runtime/` directory is disposable and ignored by Git.
+后续产品方向计划从 toC 游客导览，逐步升级为面向政府文旅部门、红色文旅企业和培训基地的 toB 路线设计与优化平台，重点扩展路线方案、课程培训方案、小程序执行、预约入口和行后总结等能力。
 
-## Included Shape
+## 点位数据
 
-- edit site code under `app/`
-- `app/chatgpt-auth.ts` provides optional dispatch-owned ChatGPT sign-in helpers
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+项目当前收录 44 个江西红色文旅点位，覆盖区域包括：
 
-## Workspace Auth Headers
+- 井冈山
+- 于都
+- 瑞金
+- 南昌
+- 安源
+- 上饶
+- 兴国
+- 宁都
+- 寻乌
+- 庐山
 
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
+每个点位包含：
 
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
+- 点位名称
+- 所属区域与县区
+- 宣传图片
+- 经纬度
+- 建议停留时间
+- 固定闭馆日
+- 是否核心历史节点
+- 红色文化主题评分
+- 体验方式评分
+- 简介文案
 
-Treat the full name as optional and fall back to email when it is absent:
+点位图片位于 `public/landmarks/`，图片核验记录见 `docs/44-point-image-audit.md`。
 
-```tsx
-import { headers } from "next/headers";
+## 核心功能
 
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
+### 1. 智能路线生成
 
-  const displayName = fullName ?? email;
-  // ...
-}
+用户选择出发县区、出发日期、游览天数、实践目的、内容主题和体验偏好后，系统会根据预设路线骨架、点位评分、开放日和估算通行时间生成多条差异化路线。
+
+### 2. 推荐结果解释
+
+每条路线会展示：
+
+- 路线名称
+- 推荐理由
+- 综合匹配分
+- 内容维度匹配度
+- 每日行程安排
+- 江西省路线地图
+
+### 3. 路线编辑
+
+用户可以对生成路线进行轻量调整：
+
+- 上移或下移点位顺序
+- 替换非核心点位
+- 删除非核心点位
+- 保存路线到当前浏览器
+
+核心历史节点默认不可删除，用于保证路线叙事完整性。
+
+### 4. 点位图鉴
+
+点位图鉴展示 44 个点位，可按区域筛选。点击点位卡片后，可以查看点位简介、建议停留时间、节点属性和内容维度评分。
+
+### 5. 离线完整版
+
+项目支持导出单文件 HTML：
+
+```text
+数智-红途-离线完整版.html
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+该文件内嵌页面样式、功能代码和 44 张点位图片，可直接双击打开，不依赖本地开发服务器。
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+## 技术栈
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+- React 19
+- Next.js 16
+- Vite 8
+- Vinext
+- TypeScript
+- Tailwind CSS 4
+- Cloudflare / ChatGPT Sites 发布结构
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+## 目录结构
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+```text
+.
+├── app/
+│   ├── page.tsx              # 页面内容、点位数据、路线算法和交互逻辑
+│   ├── globals.css           # 全局样式
+│   ├── layout.tsx            # 页面元信息与根布局
+│   ├── jiangxi-map.ts        # 江西省地图基础数据
+│   └── jiangxi-counties.ts   # 江西省县级行政区地图数据
+├── public/
+│   └── landmarks/            # 44 张点位宣传图
+├── docs/
+│   └── 44-point-image-audit.md
+├── standalone/               # 单文件 HTML 导出工具
+├── tests/                    # 离线版和渲染测试
+├── scripts/                  # 构建、导出、本地启动辅助脚本
+├── worker/                   # Cloudflare Worker / Vinext 入口
+├── .openai/hosting.json      # ChatGPT Sites 项目配置
+└── 本地运行说明.md
+```
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+## 本地运行
 
-## Diagnostic Commands
+### Windows / PowerShell
 
-- `npm run install:ci`: perform the one bounded lockfile install
-- `npm run dev`: start the Vite/Vinext development server
-- `npm run build`: build and validate the deployable Sites artifact
-- `npm run start`: start the built Vinext application
-- `npm test`: build, validate, and verify the rendered development-preview metadata
-- `npm run validate:artifact`: recheck an existing artifact's manifest and ESM `default.fetch` export
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+在项目根目录执行：
 
-Use build and validation commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.
+```powershell
+.\scripts\dev-local.ps1
+```
 
-The timeout defaults can be overridden for a controlled canary with `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, and `SITES_BUILD_KILL_AFTER`. A timeout fails the command; the helpers never retry an unchanged install or build.
+如果依赖已经安装，只想快速启动：
 
-## Learn More
+```powershell
+.\scripts\dev-local.ps1 -SkipInstall
+```
 
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+如需指定端口：
+
+```powershell
+.\scripts\dev-local.ps1 -Port 5174
+```
+
+### macOS / Linux
+
+```bash
+npm install
+npm run dev:local
+```
+
+启动后访问终端输出的本地地址，默认通常为：
+
+```text
+http://127.0.0.1:5173/
+```
+
+## 常用命令
+
+```bash
+# 本地开发
+npm run dev:local
+
+# 构建部署版本
+npm run build
+
+# 重新生成单文件离线 HTML
+npm run export:html
+
+# 运行测试
+npm test
+```
+
+Windows 环境推荐优先使用：
+
+```powershell
+.\scripts\dev-local.ps1
+```
+
+## 协作流程
+
+建议协作者使用 Git 分支协作：
+
+```bash
+git pull
+git checkout -b feature/your-feature-name
+```
+
+完成修改后：
+
+```bash
+git add .
+git commit -m "描述本次修改"
+git push
+```
+
+如果使用 GitHub 或 Gitee 远程仓库，建议将 ChatGPT Site 发布远程 `origin` 保留不动，另行添加协作远程，例如：
+
+```bash
+git remote add github https://github.com/your-name/shujing-hongtu.git
+git remote add gitee https://gitee.com/your-name/shujing-hongtu.git
+```
+
+然后推送到对应远程：
+
+```bash
+git push -u github main
+# 或
+git push -u gitee main
+```
+
+## 后续规划
+
+项目后续可以继续扩展为 toB 红色文旅路线设计平台，重点方向包括：
+
+- 面向政府文旅部门的区域精品路线设计
+- 面向红色文旅企业的路线产品组合
+- 面向培训基地的课程培训方案
+- 景点预约入口维护
+- 小程序端路线执行
+- 行后学习报告和活动总结
+- 路线复盘与二次优化
+- 云端方案库和多用户协作
+
+## 注意事项
+
+- 当前开放时间、通行时间等数据主要用于演示，正式使用前需要以景区官方信息为准。
+- 当前路线保存使用浏览器本地存储，清理浏览器数据后可能丢失。
+- `数智-红途-离线完整版.html` 是演示用产物，主要方便无开发环境时直接展示。
+- `node_modules/`、构建产物和临时文件不应提交到远程仓库。

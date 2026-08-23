@@ -1,0 +1,17 @@
+{
+  "_meta": {
+    "description": "跨市公共交通通联表（不是完整时刻表）。只存'有什么方式、多久、多少钱、多久一班、怎么接驳'，变化以年计，半年核对一次。公共交通作为与自驾/包车并列的可选模式；干线查不到时 travel() 自动回退公路。",
+    "updated": null,
+    "sources": "12306、当地汽车站公开信息；落地前需实测核对（宁都/寻乌/安源等通铁路情况特殊）",
+    "cityKey": "用地级市名称，如 南昌/赣州/吉安/九江/上饶/萍乡"
+  },
+  "cities": [
+    { "name": "南昌", "railStations": ["南昌站", "南昌西站"], "coachStations": ["南昌长途汽车站"] },
+    { "name": "赣州", "railStations": ["赣州站", "赣州西站"], "coachStations": ["赣州汽车站"] },
+    { "name": "吉安", "railStations": ["吉安站", "吉安西站"], "coachStations": ["吉安中心汽车站"] },
+    { "name": "九江", "railStations": ["九江站", "庐山站"], "coachStations": ["九江汽车站"] },
+    { "name": "上饶", "railStations": ["上饶站"], "coachStations": ["上饶汽车站"] },
+    { "name": "萍乡", "railStations": ["萍乡站", "萍乡北站"], "coachStations": ["萍乡汽车站"] }
+  ],
+  "links": []
+}
