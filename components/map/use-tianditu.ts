@@ -30,7 +30,7 @@ export function useTianDiTu(
 
   useEffect(() => {
     if (!opts.tk) {
-      setState({ ready: false, error: "未配置天地图 Key" });
+      setState({ ready: false, error: null });
       return;
     }
     if (initedRef.current) return;
@@ -71,7 +71,7 @@ export function useTianDiTu(
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [opts.tk]);
 
   return state;
 }

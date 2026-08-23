@@ -1,5 +1,6 @@
 "use client";
 import { useRef } from "react";
+import { useRuntimeMapConfig } from "./use-runtime-map-config";
 import { useTianDiTu } from "./use-tianditu";
 
 export interface MiniSpot {
@@ -23,9 +24,12 @@ export function TdtMiniMap({
   onSelect?: (spot: MiniSpot) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const mapConfig = useRuntimeMapConfig(tk);
+  const runtimeError = !mapConfig.loading ? mapConfig.error : null;
+  const effectiveTk = mapConfig.tiandituTk;
 
   const { error } = useTianDiTu(containerRef, {
-    tk,
+    tk: effectiveTk,
     zoom: 8,
     onReady: (map, T) => {
       const overlays: any[] = [];
@@ -86,7 +90,7 @@ export function TdtMiniMap({
   return (
     <div className="route-map tdt-map" aria-label="路线天地图">
       <div ref={containerRef} className="tdt-canvas" />
-      {error && <div className="tdt-error">天地图加载失败：{error}</div>}
+      {(runtimeError || error) && <div className="tdt-error">天地图加载失败：{runtimeError || error}</div>}
       <div className="map-caption">
         <span>天地图 · CGCS2000 坐标系</span>
         <span>点击编号查看点位详情</span>

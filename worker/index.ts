@@ -5,6 +5,9 @@ import handler from "vinext/server/app-router-entry";
 interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
+  TIANDITU_TK?: string;
+  VITE_MAP_ENGINE?: string;
+  VITE_TIANDITU_TK?: string;
   IMAGES: {
     input(stream: ReadableStream): {
       transform(options: Record<string, unknown>): {
@@ -28,6 +31,16 @@ interface ExecutionContext {
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+
+    if (url.pathname === "/api/map-config") {
+      const mapEngine = String(env.VITE_MAP_ENGINE ?? "").toLowerCase() === "svg" ? "svg" : "tdt";
+      const tiandituTk = String(env.VITE_TIANDITU_TK ?? env.TIANDITU_TK ?? "");
+
+      return Response.json(
+        { mapEngine, tiandituTk },
+        { headers: { "Cache-Control": "public, max-age=300" } },
+      );
+    }
 
     if (url.pathname === "/_vinext/image") {
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];

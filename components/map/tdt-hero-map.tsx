@@ -1,5 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
+import { HeroMap } from "@/components/platform-maps";
+import { useRuntimeMapConfig } from "./use-runtime-map-config";
 import { useTianDiTu } from "./use-tianditu";
 
 export interface CountyPoint {
@@ -38,8 +40,12 @@ export function TdtHeroMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
   const [detailMode, setDetailMode] = useState(false);
+  const mapConfig = useRuntimeMapConfig(tk);
+  const runtimeError = !mapConfig.loading ? mapConfig.error : null;
+  const effectiveTk = mapConfig.tiandituTk;
+
   const { error } = useTianDiTu(containerRef, {
-    tk,
+    tk: mapConfig.mapEngine === "svg" ? "" : effectiveTk,
     center: [115.35, 26.45],
     zoom: 7,
     onReady: (map, T) => {
@@ -155,6 +161,8 @@ export function TdtHeroMap({
     },
   });
 
+  if (mapConfig.mapEngine === "svg") return <HeroMap />;
+
   return (
     <div className={`hero-map tdt-map${detailMode ? " tdt-map-detail" : ""}`} aria-label="江西省天地图，高亮平台点位涉及县区">
       <div ref={containerRef} className="tdt-canvas" />
@@ -166,7 +174,7 @@ export function TdtHeroMap({
           </span>
         ))}
       </div>
-      {error && <div className="tdt-error">天地图加载失败：{error}（请检查 Key 与网络）</div>}
+      {(runtimeError || error) && <div className="tdt-error">天地图加载失败：{runtimeError || error}（请检查 Key 与网络）</div>}
       <div className="hero-map-note"><i /><span>淡红区域为资源覆盖县区</span><b>{counties.length}</b></div>
     </div>
   );

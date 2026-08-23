@@ -66,7 +66,7 @@ export function RouteDetailClient({initialPlan}:{initialPlan:Plan}) {
       <div className="route-toolbar no-print"><Link href={`/routes?${plannerQuery(plan.criteria)}`}>← 返回推荐结果</Link><div><button onClick={save}>保存路线</button><button onClick={()=>window.print()}>打印 / 导出 PDF</button></div></div>
       {savedMessage&&<p className="success-message" role="status">{savedMessage}</p>}
       <div className="bars">{plan.dimensions.map(item=><div key={item.label}><span>{item.label}</span><i><b style={{width:`${item.value}%`}}/></i><em>{item.value}%</em></div>)}</div>
-      {mapEngine==="tdt"&&tiandituTk?<TdtMiniMap tk={tiandituTk} spots={plan.spots} onSelect={spot=>{window.location.href=`/landmarks/${spot.id}`}}/>:<MiniMap plan={plan}/>}
+      {mapEngine==="tdt"?<TdtMiniMap tk={tiandituTk} spots={plan.spots} onSelect={spot=>{window.location.href=`/landmarks/${spot.id}`}}/>:<MiniMap plan={plan}/>}
       <RouteSummary spots={plan.spots} mode={plan.criteria.travelMode ?? "self"}/>
       <div className="days printable-days">{plan.days.map((day,dayIndex)=><section key={dayIndex}>
         <header><b>DAY {dayIndex+1}</b><span>{dateAt(plan.criteria.startDate,dayIndex).toLocaleDateString("zh-CN",{month:"long",day:"numeric",weekday:"short"})}</span></header>

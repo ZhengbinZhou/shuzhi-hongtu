@@ -69,7 +69,7 @@ const scenicPoints: ScenicPoint[] = spots.map(spot => ({
 }));
 
 export default function Home() {
-  const renderHeroMap = () => mapEngine==="tdt"&&tiandituTk?<TdtHeroMap tk={tiandituTk} counties={countyPoints} spots={scenicPoints}/>:<HeroMap/>;
+  const renderHeroMap = () => mapEngine==="tdt"?<TdtHeroMap tk={tiandituTk} counties={countyPoints} spots={scenicPoints}/>:<HeroMap/>;
 
   return <main className="home-fullpage">
     <section className="home-panel landing-panel">
