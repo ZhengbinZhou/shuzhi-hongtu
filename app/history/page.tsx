@@ -40,8 +40,8 @@ export default function HistoryPage() {
     <section className="history-hero" id="top">
       <div>
         <p className="kicker">HISTORY TRAIL</p>
-        <h1>历史专题路线</h1>
-        <p>把江西红色资源按历史进程组织为四个专题：从工人运动与武装起义，到井冈山道路、中央苏区政权建设，再到长征出发与赣南游击战争。每个专题都可以进入现有智能规划继续细化行程。</p>
+        <h1>你想从哪一段历史出发？</h1>
+        <p>从工人运动与武装起义，到井冈山道路、中央苏区，再到长征出发与赣南游击战争。四个专题，串起江西红色历史的不朽篇章。</p>
       </div>
       <div className="history-hero-index">
         {historyStages.map(stage => <a href={`#${stage.id}`} key={stage.id}><b>{stage.number}</b><span>{stage.shortTitle}</span></a>)}
@@ -51,7 +51,6 @@ export default function HistoryPage() {
     <section className="section history-overview">
       <div className="section-head">
         <div><small>04 / SPECIAL TOPICS</small><h2>循着历史的足迹</h2></div>
-        <p>章节顺序对应历史线索，点位链接复用当前 44 个景区详情页。</p>
       </div>
       <div className="history-stage-grid">
         {historyStages.map(stage => <a className="history-stage-card" href={`#${stage.id}`} key={stage.id}>

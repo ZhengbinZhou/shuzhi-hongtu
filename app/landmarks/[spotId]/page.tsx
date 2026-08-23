@@ -22,7 +22,7 @@ export default async function LandmarkDetailPage({params}:Props){
   const detail=spotDetails[spot.id];
   const related=spots.filter(item=>item.id!==spot.id&&item.region===spot.region).slice(0,3);
   return <main className="page-main landmark-detail">
-    <section className="landmark-cover"><img src={spot.image} alt={spot.name}/><div><p className="kicker">{spot.region} · {spot.county}</p><h1>{spot.name}</h1><p>{spot.intro}</p><dl><div><dt>建议停留</dt><dd>{spot.minutes}分钟</dd></div><div><dt>节点属性</dt><dd>{spot.core?"核心历史节点":"辅助体验点位"}</dd></div><div><dt>固定闭馆</dt><dd>{spot.closed.length?"星期一":"暂无固定闭馆日"}</dd></div></dl></div></section>
+    <section className="landmark-cover"><img src={spot.image} alt={spot.name}/><div><p className="kicker">{spot.region} · {spot.county}</p><h1>{spot.name}</h1><p>{spot.intro}</p><dl><div><dt>建议停留</dt><dd>{spot.minutes}分钟</dd></div><div><dt>固定闭馆</dt><dd>{spot.closed.length?"星期一":"暂无固定闭馆日"}</dd></div></dl></div></section>
     <section className="section landmark-body">
       <Link className="back-link no-print" href={`/landmarks?region=${encodeURIComponent(spot.region)}`}>← 返回{spot.region}点位</Link>
       {detail&&<div className="visit-panel">
@@ -43,7 +43,7 @@ export default async function LandmarkDetailPage({params}:Props){
           <div className="visit-note"><span>核验备注</span><b>{detail.verificationNote}</b></div>
         </div>
       </div>}
-      <div className="dimension-panel"><div><small>CONTENT DIMENSIONS</small><h2>内容维度</h2><p>评分用于路线匹配，不代表点位的历史价值排序。</p></div><div className="dimension-list">{Object.entries(spot.themes).map(([label,value])=><div key={label}><span>{label}</span><i><b style={{width:`${value*20}%`}}/></i><em>{value}/5</em></div>)}</div></div>
+      <div className="dimension-panel"><div><small>CONTENT DIMENSIONS</small><h2>内容维度</h2></div><div className="dimension-list">{Object.entries(spot.themes).map(([label,value])=><div key={label}><span>{label}</span><i><b style={{width:`${value*20}%`}}/></i><em>{value}/5</em></div>)}</div></div>
       {related.length>0&&<div className="related"><h2>同区域点位</h2><div className="spot-grid">{related.map(item=><Link className="spot-card" href={`/landmarks/${item.id}`} key={item.id}><img src={item.image} alt=""/><span><small>{item.county}</small><b>{item.name}</b><em>建议停留 {item.minutes} 分钟</em></span></Link>)}</div></div>}
       <p className="print-note">开放信息为演示期静态资料，出行前请核验官方通知。</p>
     </section>

@@ -13,6 +13,7 @@ import { spots, type Plan, type Spot } from "@/lib/platform-data";
 const STORAGE_KEY = "shujing-routes-v2";
 const mapEngine = getMapEngine();
 const tiandituTk = getTiandituTk();
+function displayRouteName(name:string){return name.replace(/·/g,"—");}
 
 function readSaved(): Plan[] {
   try {
@@ -58,7 +59,7 @@ export function RouteDetailClient({initialPlan}:{initialPlan:Plan}) {
   };
   return <main className="page-main">
     <section className="page-hero compact">
-      <div><p className="kicker">ROUTE DETAIL</p><h1>{plan.name}</h1><p>{plan.reason}</p></div>
+      <div><p className="kicker">ROUTE DETAIL</p><h1>{displayRouteName(plan.name)}</h1></div>
       <div className="score"><b>{plan.score}</b><span>综合匹配</span></div>
     </section>
     <section className="section route-detail-page">
@@ -70,7 +71,7 @@ export function RouteDetailClient({initialPlan}:{initialPlan:Plan}) {
       <div className="days printable-days">{plan.days.map((day,dayIndex)=><section key={dayIndex}>
         <header><b>DAY {dayIndex+1}</b><span>{dateAt(plan.criteria.startDate,dayIndex).toLocaleDateString("zh-CN",{month:"long",day:"numeric",weekday:"short"})}</span></header>
         {day.map(spot=>{const index=plan.spots.findIndex(item=>item.id===spot.id);return <div className="stop" key={spot.id}>
-          <Link className="spot-open" href={`/landmarks/${spot.id}`}><img src={spot.image} alt=""/><span><small>{spot.region} · 建议{spot.minutes}分钟</small><b>{spot.name}</b><em>{spot.core?"核心历史节点":"辅助体验点位"}</em></span></Link>
+          <Link className="spot-open" href={`/landmarks/${spot.id}`}><img src={spot.image} alt=""/><span><small>{spot.region} · 建议{spot.minutes}分钟</small><b>{spot.name}</b></span></Link>
           <div className="edit-actions no-print"><button onClick={()=>move(index,-1)} aria-label={`上移${spot.name}`}>↑</button><button onClick={()=>move(index,1)} aria-label={`下移${spot.name}`}>↓</button>{!spot.core&&<><button onClick={()=>swap(index)}>替换</button><button onClick={()=>updateSpots(plan.spots.filter(item=>item.id!==spot.id))}>删除</button></>}</div>
         </div>})}
       </section>)}</div>

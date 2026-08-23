@@ -46,8 +46,6 @@ export function TdtHeroMap({
       const allOverlays: any[] = [];
       const countyOverlays: any[] = [];
       const countyLabels: any[] = [];
-      const coreSpotOverlays: any[] = [];
-      const detailSpotOverlays: any[] = [];
       const visible = new Set<any>();
 
       const addVisible = (overlay: any) => {
@@ -79,7 +77,7 @@ export function TdtHeroMap({
               color: "#7B1419",
               weight: 3,
               opacity: 0.95,
-              fillColor: "#FB5D62",
+              fillColor: "#da291c",
               fillOpacity: 0.5,
             });
             countyOverlays.push(polygon);
@@ -126,35 +124,12 @@ export function TdtHeroMap({
           node.style.top = `${point.y}px`;
         });
       };
-
-      spots.forEach((spot) => {
-        try {
-          const circle = new T.Circle(new T.LngLat(spot.lng, spot.lat), spot.core ? 620 : 440, {
-            color: spot.core ? "#851F25" : "#A33B3D",
-            weight: spot.core ? 2 : 1.3,
-            opacity: 0.95,
-            fillColor: spot.core ? "#851F25" : "#B94B51",
-            fillOpacity: spot.core ? 0.78 : 0.58,
-          });
-          if (spot.core) {
-            coreSpotOverlays.push(circle);
-          } else {
-            detailSpotOverlays.push(circle);
-          }
-          allOverlays.push(circle);
-        } catch {
-          /* Circle 失败不影响地图底层 */
-        }
-      });
-
       const updateByZoom = () => {
         const zoom = typeof map.getZoom === "function" ? Number(map.getZoom()) : 7;
         setDetailMode(zoom >= 8);
         containerRef.current?.closest(".tdt-map")?.classList.toggle("tdt-map-detail", zoom >= 8);
         setGroup(countyOverlays, true);
         setGroup(countyLabels, true);
-        setGroup(coreSpotOverlays, zoom >= 8);
-        setGroup(detailSpotOverlays, zoom >= 9);
         updateHtmlLabels(zoom);
       };
 
@@ -187,7 +162,7 @@ export function TdtHeroMap({
         {spots.map((spot) => (
           <span key={spot.id} data-spot-id={spot.id} data-core={spot.core ? "true" : "false"}>
             <i />
-            <b>{spot.short || spot.name}</b>
+            <b>{spot.name}</b>
           </span>
         ))}
       </div>

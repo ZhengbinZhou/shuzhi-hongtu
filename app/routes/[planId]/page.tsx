@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RouteDetailClient } from "@/features/route-detail-client";
-import { generatePlans } from "@/lib/planner";
+import { generateAllPlans, generatePlans } from "@/lib/planner";
 import { parsePlannerCriteria } from "@/lib/planner-query";
 
 type Props={
@@ -19,12 +19,14 @@ export default async function RouteDetailPage({params,searchParams}:Props) {
   const decodedPlanId=decodeURIComponent(planId);
   let criteria=parsePlannerCriteria(raw);
   let plans=generatePlans(criteria.county,criteria.startDate,criteria.days,criteria.theme1,criteria.theme2,criteria.experience,criteria.purpose,criteria.travelMode);
-  let plan=plans.find(item=>item.id===decodedPlanId);
+  let plan=plans.find(item=>item.id===decodedPlanId)
+    ?? generateAllPlans(criteria.county,criteria.startDate,criteria.days,criteria.theme1,criteria.theme2,criteria.experience,criteria.purpose,criteria.travelMode).find(item=>item.id===decodedPlanId);
   const dateFromPlanId=decodedPlanId.match(/(\d{4}-\d{2}-\d{2})$/)?.[1];
   if(!plan&&dateFromPlanId&&dateFromPlanId!==criteria.startDate){
     criteria={...criteria,startDate:dateFromPlanId};
     plans=generatePlans(criteria.county,criteria.startDate,criteria.days,criteria.theme1,criteria.theme2,criteria.experience,criteria.purpose,criteria.travelMode);
-    plan=plans.find(item=>item.id===decodedPlanId);
+    plan=plans.find(item=>item.id===decodedPlanId)
+      ?? generateAllPlans(criteria.county,criteria.startDate,criteria.days,criteria.theme1,criteria.theme2,criteria.experience,criteria.purpose,criteria.travelMode).find(item=>item.id===decodedPlanId);
   }
   if(!plan)notFound();
   return <RouteDetailClient initialPlan={plan}/>;

@@ -21,8 +21,8 @@ export const experiences = ["深度讲解", "现场观察", "互动体验", "轻
 export const purposes = ["思政学习", "社会实践", "党建活动", "专题调研"];
 export const travelModes: { value: TravelMode; label: string; note: string }[] = [
   { value: "self", label: "自驾", note: "适合小团队自主出行" },
-  { value: "charter", label: "包车", note: "适合培训班、研学团门到门接驳" },
-  { value: "transit", label: "公共交通", note: "跨市优先查高铁/大巴，缺失时回退公路估算" },
+  { value: "charter", label: "包车", note: "适合团队集中出行" },
+  { value: "transit", label: "公共交通", note: "适合跨市出行" },
 ];
 const T = (人物:number,事件:number,军事:number,群众:number,政权:number,长征:number,精神:number):Record<Theme,number> => ({
   重要人物:人物, 重大事件:事件, 军事斗争:军事, 群众支前:群众, 政权建设:政权, 长征文化:长征, 革命精神:精神

@@ -26,7 +26,7 @@ export function splitDays(list:Spot[], days:number, start:string, mode: TravelMo
 export function dayMinutes(day:Spot[], mode: TravelMode = "self") {
   return day.reduce((sum,s,i)=>sum+s.minutes+(i?travel(day[i-1],s,mode):0),0);
 }
-export function generatePlans(startCounty:string,startDate:string,days:number,t1:Theme,t2:Theme,exp:string,purpose:string,mode: TravelMode = "self"):Plan[]{
+export function generateAllPlans(startCounty:string,startDate:string,days:number,t1:Theme,t2:Theme,exp:string,purpose:string,mode: TravelMode = "self"):Plan[]{
   const capacity=days*480;
   return skeletons.map((sk,idx)=>{
     let selected=sk.core.map(id=>spots.find(s=>s.id===id)!).filter(Boolean);
@@ -48,10 +48,14 @@ export function generatePlans(startCounty:string,startDate:string,days:number,t1
     const feasible=daily.length>0 && flat.length>=sk.core.length && daily.every(day=>dayMinutes(day,mode)<=480);
     const score=Math.round(Math.min(98,match*.82+(feasible?12:0)+(flat[0]?.county===startCounty?4:0)-(idx*.35)));
     return {id:`plan-${idx}-${startDate}`,name:sk.name,angle:sk.angle,score,spots:flat,days:daily,
-      reason:`以“${sk.angle}”为框架，优先匹配${t1}、${t2}和${exp}需求；${flat[0]?.county===startCounty?"首站位于所选起始县区":"为提高整体匹配度，首站调整至邻近区域"}。适合用于${purpose}。`,
+      reason:"",
       dimensions:[{label:t1,value:Math.round(match)},{label:t2,value:Math.round(flat.reduce((n,s)=>n+s.themes[t2],0)/Math.max(1,flat.length)/5*100)},{label:exp,value:Math.round(flat.reduce((n,s)=>n+(s.experience[exp]||0),0)/Math.max(1,flat.length)/5*100)},{label:"行程可行性",value:feasible?94:58}],criteria:{county:startCounty,startDate,days,theme1:t1,theme2:t2,experience:exp,purpose,travelMode:mode},feasible
     };
-  }).filter(p=>p.feasible&&p.days.length&&p.spots.length>=3).sort((a,b)=>b.score-a.score).slice(0,5);
+  }).filter(p=>p.feasible&&p.days.length&&p.spots.length>=3).sort((a,b)=>b.score-a.score);
+}
+
+export function generatePlans(startCounty:string,startDate:string,days:number,t1:Theme,t2:Theme,exp:string,purpose:string,mode: TravelMode = "self"):Plan[]{
+  return generateAllPlans(startCounty,startDate,days,t1,t2,exp,purpose,mode).slice(0,5);
 }
 
 export function baseMapPoint(lng:number,lat:number) {
