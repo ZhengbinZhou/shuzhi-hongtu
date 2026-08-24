@@ -43,25 +43,43 @@ export default function RouteMap ({
     latitude: spot.lat,
     longitude: spot.lng,
     title: `${index + 1}. ${spot.short}`,
-    iconPath: spot.image,
-    width: compact ? 22 : 28,
-    height: compact ? 22 : 28,
+    iconPath: '/map/marker-anchor.png',
+    width: 1,
+    height: 1,
     anchor: { x: 0.5, y: 0.5 },
+    ariaLabel: `第 ${index + 1} 站，${spot.name}`,
+    label: {
+      content: String(index + 1),
+      color: '#fffaf1',
+      fontSize: compact ? 10 : 11,
+      anchorX: compact ? -8 : -9,
+      anchorY: compact ? -8 : -9,
+      borderRadius: compact ? 9 : 10,
+      borderWidth: 1,
+      borderColor: '#d6a45b',
+      bgColor: '#851f25',
+      padding: compact ? 3 : 4,
+      textAlign: 'center' as const
+    },
     callout: {
-      content: `${index + 1}. ${spot.short}`,
+      content: spot.short,
       color: '#5b1117',
       fontSize: 12,
       anchorX: 0,
-      anchorY: -24,
+      anchorY: -28,
       borderRadius: 4,
       borderWidth: 1,
       borderColor: '#b77f3f',
       bgColor: '#fffaf1',
       padding: 5,
-      display: overviewMode && mapScale >= 8 ? 'ALWAYS' as const : 'BYCLICK' as const,
+      display: overviewMode && mapScale >= 9 ? 'ALWAYS' as const : 'BYCLICK' as const,
       textAlign: 'center' as const
     }
   }))
+  const openMarker = (markerId: number | string) => {
+    const spot = visibleSpots[Number(markerId) - 1]
+    if (spot) onSpotTap?.(spot)
+  }
   const polyline = showPolyline && points.length > 1
     ? [{ points, color: '#851f25DD', width: 4, arrowLine: true, borderColor: '#fff7e9', borderWidth: 1 }]
     : []
@@ -92,9 +110,10 @@ export default function RouteMap ({
           if (Number.isFinite(nextScale)) setMapScale(nextScale)
         }}
         onMarkerTap={(event) => {
-          const markerId = Number(event.detail.markerId)
-          const spot = visibleSpots[markerId - 1]
-          if (spot) onSpotTap?.(spot)
+          openMarker(event.detail.markerId)
+        }}
+        onLabelTap={(event) => {
+          openMarker(event.detail.markerId)
         }}
       />
       <View className='route-map-coverage'>

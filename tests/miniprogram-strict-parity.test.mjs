@@ -130,6 +130,16 @@ test("mini maps expose county polygons and zoom-tier landmark labels", () => {
   assert.doesNotMatch(routeDetail, /onSpotTap=\{openSpotLocation\}/);
 });
 
+test("mini map markers use restrained numbered labels instead of landmark photos", () => {
+  const routeMap = readMini("src/components/route-map/index.tsx");
+
+  assert.doesNotMatch(routeMap, /iconPath:\s*spot\.image/);
+  assert.match(routeMap, /iconPath:\s*['"]\/map\/marker-anchor\.png['"]/);
+  assert.match(routeMap, /label:\s*\{/);
+  assert.match(routeMap, /content:\s*String\(index \+ 1\)/);
+  assert.match(routeMap, /bgColor:\s*['"]#851f25['"]/);
+});
+
 test("history planner handoff preserves chapter metadata and result summary", () => {
   const preset = readMini("src/services/planner-preset.ts");
   const history = readMini("src/pages/history/index.tsx");
