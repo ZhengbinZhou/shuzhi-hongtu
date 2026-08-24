@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Map, Text, View } from '@tarojs/components'
+import { Map, ScrollView, Text, View } from '@tarojs/components'
 import type { Spot } from '@shared/domain'
 import { countyPolygons, coverageCountyNames } from '../../utils/county-polygons'
 import './index.scss'
@@ -83,6 +83,19 @@ export default function RouteMap ({
   }
   const legendLimit = compact ? 4 : 8
   const legendSpots = overviewMode ? spots : spots.slice(0, legendLimit)
+  const legendItems = (
+    <View className='route-map-legend-grid'>
+      {legendSpots.map((spot, index) => (
+        <View className='route-map-legend-item' key={spot.id} onClick={() => onSpotTap?.(spot)}>
+          <Text className='route-map-legend-index'>{index + 1}</Text>
+          <View className='route-map-legend-copy'>
+            <Text className='route-map-legend-name'>{spot.short}</Text>
+            <Text className='route-map-legend-county'>{spot.region} · {spot.county}</Text>
+          </View>
+        </View>
+      ))}
+    </View>
+  )
   const polyline = showPolyline && points.length > 1
     ? [{ points, color: '#851f25DD', width: 4, arrowLine: true, borderColor: '#fff7e9', borderWidth: 1 }]
     : []
@@ -125,9 +138,10 @@ export default function RouteMap ({
       </View>
       <View className='route-map-legend'>
         {overviewMode && <View className='route-map-legend-head'><Text>全部 {spots.length} 处点位</Text><Text>编号与地图一致</Text></View>}
-        {legendSpots.map((spot, index) => (
-          <View className='route-map-legend-item' key={spot.id} onClick={() => onSpotTap?.(spot)}><Text>{index + 1}</Text><Text>{spot.short}</Text></View>
-        ))}
+        {overviewMode
+          ? <ScrollView className='route-map-legend-scroll' scrollY enhanced showScrollbar ariaLabel='全部点位列表，上下滑动查看'>{legendItems}</ScrollView>
+          : legendItems}
+        {overviewMode && <Text className='route-map-legend-hint'>上下滑动查看全部 {spots.length} 处点位</Text>}
         {!overviewMode && spots.length > legendLimit && <Text className='route-map-more'>另有 {spots.length - legendLimit} 处点位，可在地图中缩放查看</Text>}
       </View>
     </View>

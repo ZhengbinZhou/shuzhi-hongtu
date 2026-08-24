@@ -142,13 +142,20 @@ test("mini map markers use restrained numbered labels instead of landmark photos
 
 test("overview map renders a complete legend with stable point numbering", () => {
   const routeMap = readMini("src/components/route-map/index.tsx");
+  const routeMapStyles = readMini("src/components/route-map/index.scss");
 
   assert.match(routeMap, /const legendSpots = overviewMode \? spots : spots\.slice/);
   assert.match(routeMap, /\{legendSpots\.map\(\(spot, index\)/);
   assert.match(routeMap, /全部 \{spots\.length\} 处点位/);
+  assert.match(routeMap, /<ScrollView[\s\S]*scrollY/);
+  assert.match(routeMap, /\{spot\.region\} · \{spot\.county\}/);
+  assert.match(routeMap, /上下滑动查看全部/);
   assert.match(routeMap, /id: sourceIndex \+ 1/);
   assert.match(routeMap, /spots\[Number\(markerId\) - 1\]/);
   assert.doesNotMatch(routeMap, /\{spots\.slice\(0, compact \? 4 : 8\)\.map/);
+  assert.match(routeMapStyles, /\.route-map-legend-scroll\s*\{[\s\S]*?height:\s*600rpx/);
+  assert.match(routeMapStyles, /\.route-map-legend-name\s*\{[\s\S]*?font-size:\s*23rpx/);
+  assert.match(routeMapStyles, /\.route-map-legend-county\s*\{[\s\S]*?font-size:\s*19rpx/);
 });
 
 test("history planner handoff preserves chapter metadata and result summary", () => {
