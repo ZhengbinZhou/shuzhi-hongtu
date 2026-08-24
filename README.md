@@ -1,6 +1,6 @@
 # 数智-红途
 
-数智-红途是一个聚焦江西省红色旅游资源的红色文旅智能导览平台。当前版本以网页原型为主，围绕江西全省 44 个红色点位，根据用户的出发县区、出发日期、游览天数、学习主题、体验偏好和实践目的，生成可解释、可调整的红色旅游路线。
+数智-红途是一个聚焦江西省红色旅游资源的红色文旅智能导览平台。当前版本同时提供网页端和微信小程序端，围绕江西全省 44 个红色点位，根据用户的出发县区、出发日期、游览天数、学习主题、体验偏好和实践目的，生成可解释、可执行的红色旅游路线。
 
 线上演示地址：
 
@@ -19,6 +19,7 @@ https://shujing-hongtu-jiangxi.eddiemarxfrancelyon.chatgpt.site
 - 路线顺序调整、替换、删除
 - 本地浏览器保存路线
 - 单文件离线版演示
+- 微信小程序路线规划、保存、执行、地图和分享
 
 后续产品方向计划从 toC 游客导览，逐步升级为面向政府文旅部门、红色文旅企业和培训基地的 toB 路线设计与优化平台，重点扩展路线方案、课程培训方案、小程序执行、预约入口和行后总结等能力。
 
@@ -103,6 +104,7 @@ https://shujing-hongtu-jiangxi.eddiemarxfrancelyon.chatgpt.site
 - TypeScript
 - Tailwind CSS 4
 - Cloudflare / ChatGPT Sites 发布结构
+- Taro 4 / 微信小程序
 
 ## 目录结构
 
@@ -116,8 +118,10 @@ https://shujing-hongtu-jiangxi.eddiemarxfrancelyon.chatgpt.site
 │   └── jiangxi-counties.ts   # 江西省县级行政区地图数据
 ├── public/
 │   └── landmarks/            # 44 张点位宣传图
+├── miniprogram/               # Taro 微信小程序源码与构建配置
 ├── docs/
-│   └── 44-point-image-audit.md
+│   ├── 44-point-image-audit.md
+│   └── miniprogram-release-checklist.md
 ├── standalone/               # 单文件 HTML 导出工具
 ├── tests/                    # 离线版和渲染测试
 ├── scripts/                  # 构建、导出、本地启动辅助脚本
@@ -175,7 +179,12 @@ npm run export:html
 
 # 运行测试
 npm test
+
+# 完整验收微信小程序发布包
+npm run verify:miniprogram
 ```
+
+微信开发者工具应导入项目根目录，入口由 `project.config.json` 指向 `miniprogram/dist/`。详细发布步骤见 `docs/miniprogram-release-checklist.md`。
 
 Windows 环境推荐优先使用：
 

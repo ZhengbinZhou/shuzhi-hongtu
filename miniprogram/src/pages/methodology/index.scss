@@ -1,0 +1,19 @@
+.methodology-page { background: #f5eddf; }
+.methodology-hero { padding: 76rpx 38rpx 116rpx; color: #fff8eb; background: radial-gradient(circle at 84% 14%, rgba(214,164,91,.2), transparent 30%), #2c211e; }
+.methodology-hero text { display: block; }
+.methodology-hero text:first-child { color: #d6a45b; font-size: 19rpx; letter-spacing: 4rpx; }
+.methodology-hero text:nth-child(2) { margin-top: 24rpx; font-family: "Songti SC", STSong, serif; font-size: 52rpx; font-weight: 700; line-height: 1.4; }
+.methodology-hero text:last-child { margin-top: 25rpx; color: rgba(255,248,235,.68); font-size: 24rpx; line-height: 1.8; }
+.methodology-steps { margin: -60rpx 28rpx 0; position: relative; z-index: 1; }
+.methodology-step { padding: 30rpx; display: flex; gap: 26rpx; background: #fffaf1; box-shadow: 0 12rpx 36rpx rgba(72,39,28,.08); }
+.methodology-step + .methodology-step { margin-top: 16rpx; }
+.methodology-step > text { color: #b77f3f; font-family: Georgia, serif; font-size: 44rpx; }
+.methodology-step > view text { display: block; }
+.methodology-step > view text:first-child { font-family: "Songti SC", STSong, serif; font-size: 29rpx; font-weight: 700; }
+.methodology-step > view text:last-child { margin-top: 11rpx; color: #75635a; font-size: 21rpx; line-height: 1.72; }
+.methodology-boundary { margin: 28rpx; padding: 34rpx 30rpx; color: #fff8eb; background: #67151b; border-left: 6rpx solid #d6a45b; }
+.methodology-boundary text { display: block; }
+.methodology-boundary text:first-child { color: #d6a45b; font-family: "Songti SC", STSong, serif; font-size: 30rpx; font-weight: 700; }
+.methodology-boundary text:last-child { margin-top: 16rpx; color: rgba(255,248,235,.7); font-size: 21rpx; line-height: 1.75; }
+.methodology-action { height: 88rpx; margin: 0 28rpx 24rpx; padding: 0 26rpx; display: flex; align-items: center; justify-content: space-between; color: #fff8eb; background: #75171d; font-size: 24rpx; font-weight: 700; }
+.methodology-action text { color: #d9ae6f; }

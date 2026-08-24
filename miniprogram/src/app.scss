@@ -1,0 +1,60 @@
+page {
+  min-height: 100%;
+  color: #2d211d;
+  background: #f5eddf;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+view,
+text,
+image,
+button,
+input {
+  box-sizing: border-box;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  line-height: inherit;
+  border-radius: 0;
+}
+
+button::after {
+  border: 0;
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding-bottom: calc(44rpx + env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+
+.section-kicker {
+  display: block;
+  margin-bottom: 12rpx;
+  color: #851f25;
+  font-size: 20rpx;
+  font-weight: 600;
+  letter-spacing: 4rpx;
+}
+
+.section-heading {
+  display: block;
+  color: #2d211d;
+  font-family: "Songti SC", STSong, serif;
+  font-size: 42rpx;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 1rpx;
+}
+
+.tap-button {
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.tap-button:active {
+  opacity: 0.88;
+  transform: scale(0.98);
+}
