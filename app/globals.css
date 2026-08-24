@@ -1799,21 +1799,21 @@ footer nav a:hover{color:#a71911}
 .route-context small,
 .route-services small{
   color:#da291c;
-  font-size:17px;
+  font-size:16px;
   letter-spacing:.16em;
 }
 .route-context h2,
 .route-services h2{
   margin:7px 0 0;
   color:var(--ink);
-  font:900 30px/1.35 "Noto Serif SC","Songti SC","SimSun",serif;
+  font:900 24px/1.35 "Noto Serif SC","Songti SC","SimSun",serif;
   letter-spacing:0;
 }
 .route-context p{
   margin:0;
   color:#64534d;
   font-size:20px;
-  line-height:2;
+  line-height:1.85;
 }
 .route-context p+p{
   margin-top:12px;
@@ -1875,5 +1875,50 @@ footer nav a:hover{color:#a71911}
   }
   .service-column a{
     min-height:auto;
+  }
+}
+
+/* Apple-like atlas filter bar */
+.atlas-filters{
+  width:max-content!important;
+  max-width:100%!important;
+  margin:-10px 0 26px!important;
+  padding:6px!important;
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  background:rgba(242,242,247,.82)!important;
+  border:1px solid rgba(218,41,28,.10)!important;
+  border-radius:18px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72),0 12px 32px rgba(100,32,20,.07)!important;
+  backdrop-filter:blur(18px) saturate(160%)!important;
+}
+.atlas-filters button{
+  min-height:36px!important;
+  padding:7px 14px!important;
+  color:#6d5d58!important;
+  background:transparent!important;
+  border:1px solid transparent!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+  font-weight:600!important;
+  transition:background .18s ease,color .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+}
+.atlas-filters button:hover{
+  color:#a71911!important;
+  background:rgba(255,255,255,.58)!important;
+}
+.atlas-filters button.active{
+  color:#a71911!important;
+  background:rgba(255,255,255,.96)!important;
+  border-color:rgba(218,41,28,.10)!important;
+  box-shadow:0 5px 16px rgba(100,32,20,.10),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+@media(max-width:700px){
+  .atlas-filters{
+    width:100%!important;
+  }
+  .atlas-filters button{
+    flex:1 1 auto!important;
   }
 }

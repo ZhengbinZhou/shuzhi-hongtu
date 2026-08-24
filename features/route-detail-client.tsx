@@ -70,7 +70,6 @@ export function RouteDetailClient({initialPlan}:{initialPlan:Plan}) {
       <section className="route-context" aria-label="路线背景介绍">
         <div><small>BACKGROUND</small><h2>路线背景</h2></div>
         <p>{plan.background}</p>
-        <p>{plan.reason}</p>
       </section>
       {mapEngine==="tdt"?<TdtMiniMap tk={tiandituTk} spots={plan.spots} onSelect={spot=>{window.location.href=`/landmarks/${spot.id}`}}/>:<MiniMap plan={plan}/>}
       <RouteSummary spots={plan.spots} mode={plan.criteria.travelMode ?? "self"}/>
@@ -84,7 +83,7 @@ export function RouteDetailClient({initialPlan}:{initialPlan:Plan}) {
       <section className="route-services" aria-label="住宿与出行推荐链接">
         <div className="service-column">
           <small>STAY</small>
-          <h2>携程住宿</h2>
+          <h2>住宿参考</h2>
           {plan.services.hotels.map(link=><a key={link.href} href={link.href} target="_blank" rel="noreferrer"><b>{link.label}</b><span>{link.note}</span></a>)}
         </div>
         <div className="service-column">
