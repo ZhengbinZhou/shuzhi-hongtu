@@ -1,6 +1,6 @@
 import { JIANGXI_BOUNDS } from "@/app/jiangxi-map";
 import { travelEngine, type TravelMode } from "@/lib/route/travel";
-import { skeletons, spots, type Plan, type Spot, type Theme } from "@/lib/platform-data";
+import { skeletons, spots, type Plan, type RouteServiceLink, type RouteServices, type Spot, type Theme } from "@/lib/platform-data";
 
 export function travel(a: Spot, b: Spot, mode: TravelMode = "self") {
   return travelEngine.travel(a, b, mode).minutes;
@@ -8,10 +8,49 @@ export function travel(a: Spot, b: Spot, mode: TravelMode = "self") {
 export function dateAt(start:string, offset:number) { const d = new Date(`${start}T12:00:00`); d.setDate(d.getDate()+offset); return d; }
 export function isOpen(s:Spot, start:string, day:number) { return !s.closed.includes(dateAt(start,day).getDay()); }
 export function pointFit(s:Spot, t1:Theme, t2:Theme, exp:string) { return s.themes[t1]*.5+s.themes[t2]*.25+(s.experience[exp]||0)*.25; }
+function uniq<T>(items:T[]) {
+  return Array.from(new Set(items));
+}
+
+function serviceSearch(label:string, query:string, note:string): RouteServiceLink {
+  return {label, note, href:`https://www.baidu.com/s?wd=${encodeURIComponent(query)}`};
+}
+
+export function buildRouteServices(routeSpots:Spot[]): RouteServices {
+  const regions=uniq(routeSpots.map(spot=>spot.region));
+  const counties=uniq(routeSpots.map(spot=>spot.county));
+  const routeName=regions.join("、") || "江西红色路线";
+  const hotels=regions.slice(0,3).map(region =>
+    serviceSearch(`${region}住宿检索`, `${region} 红色旅游 酒店 住宿`, `查看${region}周边酒店、民宿和团队住宿信息`)
+  );
+  const charters=[
+    serviceSearch(`${routeName}包车检索`, `${routeName} 红色旅游 包车`, regions.length>1 ? "适合跨区域团队接驳和全天用车比价" : "适合同城点位之间集中接驳"),
+    serviceSearch(`${counties[0] ?? regions[0] ?? "江西"}租车/包车`, `${counties[0] ?? regions[0] ?? "江西"} 租车 包车 司机`, "优先核对车型、行李空间、发票和取消规则"),
+  ];
+  return {hotels, charters};
+}
+
 export function arrange(list:Spot[], mode: TravelMode = "self") {
   if (list.length < 2) return list;
-  const remaining=[...list.slice(1)], out=[list[0]];
-  while(remaining.length){ const last=out[out.length-1]; remaining.sort((a,b)=>travel(last,a,mode)-travel(last,b,mode)); out.push(remaining.shift()!); }
+  let remaining=[...list.slice(1)];
+  const out:Spot[]=[];
+  let regionStart:Spot|undefined=list[0];
+  while(regionStart){
+    const region=regionStart.region;
+    const group=[regionStart,...remaining.filter(s=>s.region===region)];
+    remaining=remaining.filter(s=>s.region!==region);
+    const groupRest=group.slice(1), groupOut=[group[0]];
+    while(groupRest.length){
+      const last=groupOut[groupOut.length-1];
+      groupRest.sort((a,b)=>travel(last,a,mode)-travel(last,b,mode));
+      groupOut.push(groupRest.shift()!);
+    }
+    out.push(...groupOut);
+    if(!remaining.length) break;
+    const last=out[out.length-1];
+    remaining.sort((a,b)=>travel(last,a,mode)-travel(last,b,mode));
+    regionStart=remaining.shift();
+  }
   return out;
 }
 export function splitDays(list:Spot[], days:number, start:string, mode: TravelMode = "self") {
@@ -48,7 +87,9 @@ export function generateAllPlans(startCounty:string,startDate:string,days:number
     const feasible=daily.length>0 && flat.length>=sk.core.length && daily.every(day=>dayMinutes(day,mode)<=480);
     const score=Math.round(Math.min(98,match*.82+(feasible?12:0)+(flat[0]?.county===startCounty?4:0)-(idx*.35)));
     return {id:`plan-${idx}-${startDate}`,name:sk.name,angle:sk.angle,score,spots:flat,days:daily,
-      reason:"",
+      reason:`${sk.angle}，并优先把${uniq(flat.map(s=>s.region)).join("、")}等区域内的点位连续安排，减少跨区域折返。`,
+      background:sk.background,
+      services:buildRouteServices(flat),
       dimensions:[{label:t1,value:Math.round(match)},{label:t2,value:Math.round(flat.reduce((n,s)=>n+s.themes[t2],0)/Math.max(1,flat.length)/5*100)},{label:exp,value:Math.round(flat.reduce((n,s)=>n+(s.experience[exp]||0),0)/Math.max(1,flat.length)/5*100)},{label:"行程可行性",value:feasible?94:58}],criteria:{county:startCounty,startDate,days,theme1:t1,theme2:t2,experience:exp,purpose,travelMode:mode},feasible
     };
   }).filter(p=>p.feasible&&p.days.length&&p.spots.length>=3).sort((a,b)=>b.score-a.score);

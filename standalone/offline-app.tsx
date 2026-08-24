@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { HeroMap, MiniMap } from "../components/platform-maps";
 import { counties, experiences, purposes, regions, spots, themeOptions, type Plan, type Spot, type Theme } from "../lib/platform-data";
-import { dateAt, generatePlans, pointFit, splitDays } from "../lib/planner";
+import { buildRouteServices, dateAt, generatePlans, pointFit, splitDays } from "../lib/planner";
 
 export default function OfflineApp(){
   const [county,setCounty]=useState("于都县");
@@ -20,9 +20,10 @@ export default function OfflineApp(){
   const preset=useMemo(()=>generatePlans("于都县",startDate,1,"长征文化","群众支前","现场观察","思政学习")[0],[startDate]);
   const run=()=>{const next=generatePlans(county,startDate,days,theme1,theme2,experience,purpose);setPlans(next);setActive(next[0]||null);setTimeout(()=>document.querySelector("#results")?.scrollIntoView({behavior:"smooth"}),50)};
   const save=()=>{if(!active)return;const next=[{...active,id:`saved-${Date.now()}`},...saved].slice(0,12);setSaved(next);localStorage.setItem("shujing-routes",JSON.stringify(next));};
-  const updateSpots=(next:Spot[])=>setActive(active?{...active,spots:next,days:splitDays(next,days,startDate),score:Math.max(60,active.score-1)}:null);
+  const updateSpots=(next:Spot[])=>setActive(active?{...active,spots:next,days:splitDays(next,days,startDate),services:buildRouteServices(next),score:Math.max(60,active.score-1)}:null);
   const move=(i:number,dir:number)=>{if(!active)return;const next=[...active.spots],j=i+dir;if(j<0||j>=next.length)return;[next[i],next[j]]=[next[j],next[i]];updateSpots(next)};
   const swap=(i:number)=>{if(!active)return;const old=active.spots[i];const candidate=spots.filter(s=>s.region===old.region&&!active.spots.some(x=>x.id===s.id)&&!s.core).sort((a,b)=>pointFit(b,theme1,theme2,experience)-pointFit(a,theme1,theme2,experience))[0];if(candidate){const next=[...active.spots];next[i]=candidate;updateSpots(next)}};
+  const activeServices=active ? active.services ?? buildRouteServices(active.spots) : null;
   return <main className="offline-app">
     <header className="topbar"><a className="brand" href="#top"><span className="seal">智</span><span><b>数智-红途</b><small>红色文旅智能导览平台</small></span></a><nav><a href="#planner">智能规划</a><a href="#results">推荐路线</a><a href="#atlas">点位图鉴</a><a href="#saved">我的路线</a></nav><button className="nav-cta print-button" onClick={()=>window.print()}>打印导览</button></header>
     <section className="hero" id="top">
@@ -46,8 +47,9 @@ export default function OfflineApp(){
     <section className={`results ${plans.length?"show":""} `} id="results">
       <div className="section results-inner"><div className="section-head light"><div><small>02 / RECOMMENDATIONS</small><h2>{plans.length?`为你生成 ${plans.length} 条差异化路线`:"个性化推荐将在这里呈现"}</h2></div><p>{plans.length?"按综合得分排序；若约束过严，只展示实际可行方案。":"完成上方选择后生成路线。"}</p></div>
         {plans.length>0&&<div className="result-layout"><div className="plan-tabs">{plans.map((p,i)=><button key={p.id} className={active?.id===p.id?"active":""} onClick={()=>setActive(p)}><span>0{i+1}</span><div><small>{p.angle}</small><b>{p.name}</b></div><strong>{p.score}<em>分</em></strong></button>)}</div>
-        {active&&<article className="plan-detail"><div className="plan-title"><div><small>综合推荐方案</small><h3>{active.name}</h3><p>{active.reason}</p></div><div className="score"><b>{active.score}</b><span>综合匹配</span></div></div><div className="bars">{active.dimensions.map(d=><div key={d.label}><span>{d.label}</span><i><b style={{width:`${d.value}%`}}/></i><em>{d.value}%</em></div>)}</div><MiniMap plan={active}/>
+        {active&&<article className="plan-detail"><div className="plan-title"><div><small>综合推荐方案</small><h3>{active.name}</h3><p>{active.reason}</p></div><div className="score"><b>{active.score}</b><span>综合匹配</span></div></div><div className="bars">{active.dimensions.map(d=><div key={d.label}><span>{d.label}</span><i><b style={{width:`${d.value}%`}}/></i><em>{d.value}%</em></div>)}</div><section className="route-context"><div><small>BACKGROUND</small><h2>路线背景</h2></div><p>{active.background}</p><p>{active.reason}</p></section><MiniMap plan={active}/>
           <div className="days">{active.days.map((day,di)=><section key={di}><header><b>DAY {di+1}</b><span>{dateAt(startDate,di).toLocaleDateString("zh-CN",{month:"long",day:"numeric",weekday:"short"})}</span></header>{day.map(s=>{const index=active.spots.findIndex(x=>x.id===s.id);return <div className="stop" key={s.id}><button className="spot-open" onClick={()=>setSelectedSpot(s)}><img src={s.image} alt=""/><span><small>{s.region} · 建议{s.minutes}分钟</small><b>{s.name}</b><em>{s.core?"核心历史节点":"辅助体验点位"}</em></span></button><div className="edit-actions"><button onClick={()=>move(index,-1)} aria-label="上移">↑</button><button onClick={()=>move(index,1)} aria-label="下移">↓</button>{!s.core&&<><button onClick={()=>swap(index)}>替换</button><button onClick={()=>updateSpots(active.spots.filter(x=>x.id!==s.id))}>删除</button></>}</div></div>})}</section>)}</div>
+          {activeServices&&<section className="route-services"><div className="service-column"><small>STAY</small><h2>住宿参考</h2>{activeServices.hotels.map(link=><a key={link.href} href={link.href} target="_blank" rel="noreferrer"><b>{link.label}</b><span>{link.note}</span></a>)}</div><div className="service-column"><small>TRANSFER</small><h2>包车与接驳</h2>{activeServices.charters.map(link=><a key={link.href} href={link.href} target="_blank" rel="noreferrer"><b>{link.label}</b><span>{link.note}</span></a>)}</div></section>}
           <div className="plan-actions"><button onClick={save}>保存到“我的路线”</button><button onClick={()=>window.print()}>打印 / 导出 PDF</button><span>路线修改后会重新校验日期与时间；核心历史节点不可删除。</span></div>
         </article>}</div>}</div>
     </section>

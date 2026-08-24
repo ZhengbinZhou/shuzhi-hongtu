@@ -1781,3 +1781,99 @@ footer nav a:hover{color:#a71911}
   color:#ffd9b3!important;
   text-shadow:0 1px 12px rgba(0,0,0,.18);
 }
+
+/* Route detail additions */
+.route-context{
+  margin:24px 0;
+  padding:26px;
+  display:grid;
+  grid-template-columns:minmax(150px,220px) 1fr;
+  gap:22px;
+  color:var(--ink);
+  background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(255,246,240,.58));
+  border:1px solid rgba(218,41,28,.12);
+  border-radius:28px;
+  box-shadow:0 18px 52px rgba(100,32,20,.09);
+  backdrop-filter:blur(16px) saturate(150%);
+}
+.route-context small,
+.route-services small{
+  color:#da291c;
+  font-size:16px;
+  letter-spacing:.16em;
+}
+.route-context h2,
+.route-services h2{
+  margin:7px 0 0;
+  color:var(--ink);
+  font:900 24px/1.35 "Noto Serif SC","Songti SC","SimSun",serif;
+  letter-spacing:0;
+}
+.route-context p{
+  margin:0;
+  color:#64534d;
+  font-size:16px;
+  line-height:1.9;
+}
+.route-context p+p{
+  margin-top:12px;
+}
+.route-services{
+  margin-top:30px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+.service-column{
+  padding:24px;
+  background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(255,246,240,.58));
+  border:1px solid rgba(218,41,28,.12);
+  border-radius:28px;
+  box-shadow:0 18px 52px rgba(100,32,20,.08);
+}
+.service-column a{
+  min-height:86px;
+  margin-top:12px;
+  padding:16px 18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:7px;
+  color:var(--ink);
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(218,41,28,.12);
+  border-radius:20px;
+}
+.service-column a:hover{
+  border-color:rgba(218,41,28,.34);
+  box-shadow:0 12px 30px rgba(126,28,18,.12);
+}
+.service-column b{
+  color:var(--ink);
+  font:700 17px/1.35 "Noto Serif SC","Songti SC","SimSun",serif;
+}
+.service-column span{
+  color:#75635d;
+  font-size:16px;
+  line-height:1.55;
+}
+@media(max-width:700px){
+  .route-context,
+  .route-services{
+    grid-template-columns:1fr;
+  }
+  .route-context,
+  .service-column{
+    padding:22px;
+    border-radius:24px;
+  }
+}
+@media print{
+  .route-context,
+  .route-services{
+    break-inside:avoid;
+  }
+  .service-column a{
+    min-height:auto;
+  }
+}
