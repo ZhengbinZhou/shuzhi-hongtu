@@ -1,4 +1,4 @@
 export default definePageConfig({
-  navigationBarTitleText: '数智-红途',
+  navigationBarTitleText: '点位图鉴',
   enableShareAppMessage: true
 })

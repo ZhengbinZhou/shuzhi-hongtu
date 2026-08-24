@@ -18,7 +18,8 @@
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
     "export:offline": "vite build --config standalone/vite.config.ts && node standalone/prepare-offline.mjs && node --test tests/offline-bundle.test.mjs",
     "export:html": "npm run export:offline && node standalone/package-html.mjs && node --test tests/standalone-html.test.mjs",
-    "precompute:travel": "node scripts/precompute-travel.mjs"
+    "precompute:travel": "node scripts/precompute-travel.mjs",
+    "verify:miniprogram": "npm --prefix miniprogram run verify:weapp"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

@@ -1,0 +1,378 @@
+.route-detail-page {
+  background: #f5eddf;
+}
+
+.route-detail-hero {
+  padding: 48rpx 38rpx 132rpx;
+  position: relative;
+  overflow: hidden;
+  color: #fff8eb;
+  background:
+    radial-gradient(circle at 86% 6%, rgba(221, 175, 94, 0.2), transparent 30%),
+    #67151b;
+}
+
+.route-detail-hero::after {
+  content: '';
+  width: 310rpx;
+  height: 310rpx;
+  position: absolute;
+  right: -170rpx;
+  bottom: -130rpx;
+  border: 42rpx double rgba(218, 174, 99, 0.09);
+  border-radius: 50%;
+}
+
+.route-detail-meta {
+  display: flex;
+  justify-content: space-between;
+  color: #d9ae6f;
+  font-family: Georgia, serif;
+  font-size: 19rpx;
+  letter-spacing: 3rpx;
+}
+
+.route-detail-angle,
+.route-detail-title,
+.route-detail-reason {
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.route-detail-angle {
+  margin-top: 54rpx;
+  color: #d9ae6f;
+  font-size: 21rpx;
+  letter-spacing: 3rpx;
+}
+
+.route-detail-title {
+  width: 620rpx;
+  margin-top: 16rpx;
+  font-family: "Songti SC", STSong, serif;
+  font-size: 55rpx;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.route-detail-reason {
+  width: 620rpx;
+  margin-top: 24rpx;
+  color: rgba(255, 248, 235, 0.7);
+  font-size: 23rpx;
+  line-height: 1.75;
+}
+
+.route-detail-facts {
+  margin-top: 38rpx;
+  padding-top: 28rpx;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.15);
+}
+
+.route-detail-facts view {
+  width: 33.333%;
+  display: flex;
+  flex-direction: column;
+}
+
+.route-detail-facts view + view {
+  padding-left: 24rpx;
+  border-left: 1rpx solid rgba(255, 255, 255, 0.15);
+}
+
+.route-detail-facts view text:first-child {
+  color: #d9ae6f;
+  font-family: Georgia, "Songti SC", serif;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.route-detail-facts view text:last-child {
+  margin-top: 7rpx;
+  color: rgba(255, 248, 235, 0.58);
+  font-size: 18rpx;
+}
+
+.execution-card {
+  margin: -70rpx 28rpx 0;
+  padding: 34rpx 30rpx;
+  position: relative;
+  z-index: 2;
+  background: #fffaf1;
+  box-shadow: 0 18rpx 50rpx rgba(73, 37, 27, 0.14);
+}
+
+.execution-title {
+  margin-bottom: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.execution-title view text {
+  display: block;
+}
+
+.execution-title view text:first-child {
+  font-family: "Songti SC", STSong, serif;
+  font-size: 29rpx;
+  font-weight: 700;
+}
+
+.execution-title view text:last-child {
+  margin-top: 6rpx;
+  color: #9a877b;
+  font-size: 18rpx;
+}
+
+.execution-title > text {
+  color: #851f25;
+  font-family: Georgia, serif;
+  font-size: 38rpx;
+  font-weight: 700;
+}
+
+.execution-count {
+  display: block;
+  margin-top: 12rpx;
+  color: #806f66;
+  font-size: 19rpx;
+  text-align: right;
+}
+
+.route-days-detail {
+  padding: 62rpx 28rpx 0;
+}
+
+.route-day-card {
+  overflow: hidden;
+  background: #fffaf1;
+  box-shadow: 0 12rpx 38rpx rgba(72, 39, 28, 0.08);
+}
+
+.route-day-card + .route-day-card {
+  margin-top: 24rpx;
+}
+
+.route-day-head {
+  padding: 26rpx 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff8eb;
+  background: #2c211e;
+}
+
+.route-day-head > view:first-child {
+  display: flex;
+  align-items: baseline;
+  gap: 10rpx;
+  color: #d9ae6f;
+  font-family: Georgia, serif;
+}
+
+.route-day-head > view:first-child text:first-child {
+  font-size: 17rpx;
+  letter-spacing: 2rpx;
+}
+
+.route-day-head > view:first-child text:last-child {
+  font-size: 38rpx;
+}
+
+.route-day-head > view:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.route-day-head > view:last-child text:first-child {
+  font-size: 23rpx;
+  font-weight: 600;
+}
+
+.route-day-head > view:last-child text:last-child {
+  margin-top: 4rpx;
+  color: rgba(255, 248, 235, 0.56);
+  font-size: 17rpx;
+}
+
+.route-day-stops {
+  padding: 6rpx 28rpx 28rpx;
+}
+
+.execution-stop {
+  padding: 28rpx 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 18rpx;
+  border-bottom: 1rpx solid #e4d6c4;
+}
+
+.execution-stop:last-child {
+  border-bottom: 0;
+}
+
+.completion-button {
+  width: 48rpx;
+  height: 48rpx;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff8eb;
+  background: #851f25;
+  border-radius: 50%;
+  font-family: Georgia, serif;
+  font-size: 21rpx;
+}
+
+.execution-stop-complete .completion-button {
+  color: #2c211e;
+  background: #d6a45b;
+}
+
+.execution-stop-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.execution-stop-copy text {
+  display: block;
+}
+
+.execution-stop-copy text:first-child {
+  font-family: "Songti SC", STSong, serif;
+  font-size: 27rpx;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.execution-stop-complete .execution-stop-copy text:first-child {
+  color: #8e7c71;
+  text-decoration: line-through;
+}
+
+.execution-stop-copy text:nth-child(2) {
+  margin-top: 7rpx;
+  color: #9a877b;
+  font-size: 18rpx;
+}
+
+.execution-stop-copy text:nth-child(3) {
+  margin-top: 14rpx;
+  color: #75635a;
+  font-size: 21rpx;
+  line-height: 1.65;
+}
+
+.map-button {
+  width: 82rpx;
+  height: 54rpx;
+  flex: 0 0 auto;
+  color: #851f25;
+  background: transparent;
+  border: 1rpx solid #c7ac91;
+  font-size: 19rpx;
+}
+
+.route-background {
+  margin: 34rpx 28rpx 0;
+  padding: 38rpx 32rpx;
+  color: #fff8eb;
+  background: #2c211e;
+  border-left: 6rpx solid #b77f3f;
+}
+
+.route-background text {
+  display: block;
+}
+
+.route-background text:first-child {
+  color: #d6a45b;
+  font-size: 20rpx;
+  letter-spacing: 4rpx;
+}
+
+.route-background text:last-child {
+  margin-top: 20rpx;
+  color: rgba(255, 248, 235, 0.72);
+  font-size: 23rpx;
+  line-height: 1.8;
+}
+
+.route-detail-actions {
+  padding: 34rpx 28rpx 0;
+  display: flex;
+  gap: 16rpx;
+}
+
+.route-save,
+.route-share {
+  height: 88rpx;
+  flex: 1;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.route-save {
+  color: #fff8eb;
+  background: #75171d;
+}
+
+.route-saved {
+  color: #5f4d43;
+  background: #dfd0bc;
+}
+
+.route-share {
+  color: #75171d;
+  background: transparent;
+  border: 1rpx solid #b89675;
+}
+
+.route-disclaimer {
+  display: block;
+  padding: 28rpx 45rpx 18rpx;
+  color: #9a877b;
+  font-size: 18rpx;
+  line-height: 1.65;
+  text-align: center;
+}
+
+.route-missing {
+  padding: 140rpx 42rpx;
+  color: #fff8eb;
+  background: #2c211e;
+}
+
+.route-missing > text {
+  display: block;
+}
+
+.route-missing > text:first-child {
+  font-family: "Songti SC", STSong, serif;
+  font-size: 46rpx;
+  font-weight: 700;
+}
+
+.route-missing > text:nth-child(2) {
+  margin-top: 24rpx;
+  color: rgba(255, 248, 235, 0.65);
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.missing-action {
+  width: 100%;
+  height: 88rpx;
+  margin-top: 42rpx;
+  color: #5b1117;
+  background: #d9ae6f;
+  font-size: 25rpx;
+  font-weight: 600;
+}

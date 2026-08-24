@@ -3,6 +3,7 @@
     "es6": true,
     "postcss": true,
     "minified": true,
+    "compileHotReLoad": false,
     "uglifyFileName": false,
     "enhance": true,
     "packNpmRelationList": [],
