@@ -16,13 +16,18 @@ function serviceSearch(label:string, query:string, note:string): RouteServiceLin
   return {label, note, href:`https://www.baidu.com/s?wd=${encodeURIComponent(query)}`};
 }
 
+function ctripHotelSearch(label:string, keyword:string, note:string): RouteServiceLink {
+  return {label, note, href:`https://hotels.ctrip.com/hotels/list?keyword=${encodeURIComponent(keyword)}`};
+}
+
 export function buildRouteServices(routeSpots:Spot[]): RouteServices {
   const regions=uniq(routeSpots.map(spot=>spot.region));
   const counties=uniq(routeSpots.map(spot=>spot.county));
   const routeName=regions.join("、") || "江西红色路线";
-  const hotels=regions.slice(0,3).map(region =>
-    serviceSearch(`${region}住宿检索`, `${region} 红色旅游 酒店 住宿`, `查看${region}周边酒店、民宿和团队住宿信息`)
-  );
+  const stayPlace=counties[0] ?? regions[0] ?? "江西";
+  const hotels=[
+    ctripHotelSearch(`在携程查看${stayPlace}住宿`, `${stayPlace} 酒店`, `进入携程酒店列表页后，可按日期、位置、价格和评分筛选当地住宿`)
+  ];
   const charters=[
     serviceSearch(`${routeName}包车检索`, `${routeName} 红色旅游 包车`, regions.length>1 ? "适合跨区域团队接驳和全天用车比价" : "适合同城点位之间集中接驳"),
     serviceSearch(`${counties[0] ?? regions[0] ?? "江西"}租车/包车`, `${counties[0] ?? regions[0] ?? "江西"} 租车 包车 司机`, "优先核对车型、行李空间、发票和取消规则"),
@@ -87,7 +92,7 @@ export function generateAllPlans(startCounty:string,startDate:string,days:number
     const feasible=daily.length>0 && flat.length>=sk.core.length && daily.every(day=>dayMinutes(day,mode)<=480);
     const score=Math.round(Math.min(98,match*.82+(feasible?12:0)+(flat[0]?.county===startCounty?4:0)-(idx*.35)));
     return {id:`plan-${idx}-${startDate}`,name:sk.name,angle:sk.angle,score,spots:flat,days:daily,
-      reason:`${sk.angle}，并优先把${uniq(flat.map(s=>s.region)).join("、")}等区域内的点位连续安排，减少跨区域折返。`,
+      reason:`这条路线会先把${uniq(flat.map(s=>s.region)).join("、")}等区域内的点位走顺，再安排下一段，不用在几个地方之间来回折腾。`,
       background:sk.background,
       services:buildRouteServices(flat),
       dimensions:[{label:t1,value:Math.round(match)},{label:t2,value:Math.round(flat.reduce((n,s)=>n+s.themes[t2],0)/Math.max(1,flat.length)/5*100)},{label:exp,value:Math.round(flat.reduce((n,s)=>n+(s.experience[exp]||0),0)/Math.max(1,flat.length)/5*100)},{label:"行程可行性",value:feasible?94:58}],criteria:{county:startCounty,startDate,days,theme1:t1,theme2:t2,experience:exp,purpose,travelMode:mode},feasible

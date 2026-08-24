@@ -84,7 +84,7 @@ export function RouteDetailClient({initialPlan}:{initialPlan:Plan}) {
       <section className="route-services" aria-label="住宿与出行推荐链接">
         <div className="service-column">
           <small>STAY</small>
-          <h2>住宿参考</h2>
+          <h2>携程住宿</h2>
           {plan.services.hotels.map(link=><a key={link.href} href={link.href} target="_blank" rel="noreferrer"><b>{link.label}</b><span>{link.note}</span></a>)}
         </div>
         <div className="service-column">

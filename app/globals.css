@@ -1799,21 +1799,21 @@ footer nav a:hover{color:#a71911}
 .route-context small,
 .route-services small{
   color:#da291c;
-  font-size:16px;
+  font-size:17px;
   letter-spacing:.16em;
 }
 .route-context h2,
 .route-services h2{
   margin:7px 0 0;
   color:var(--ink);
-  font:900 24px/1.35 "Noto Serif SC","Songti SC","SimSun",serif;
+  font:900 30px/1.35 "Noto Serif SC","Songti SC","SimSun",serif;
   letter-spacing:0;
 }
 .route-context p{
   margin:0;
   color:#64534d;
-  font-size:16px;
-  line-height:1.9;
+  font-size:20px;
+  line-height:2;
 }
 .route-context p+p{
   margin-top:12px;
