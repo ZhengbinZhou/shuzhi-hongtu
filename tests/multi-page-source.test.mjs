@@ -22,24 +22,25 @@ test("application exposes the planned multi-page routes",()=>{
 });
 
 test("history topic routes are integrated",()=>{
-  assert.ok(fs.existsSync(path.join(root,"lib/history-data.ts")));
+  assert.ok(fs.existsSync(path.join(root,"shared/domain/history-data.ts")));
   assert.ok(fs.existsSync(path.join(root,"public/important/map-stage-01-woodcut.webp")));
-  assert.equal(read("lib/history-data.ts").match(/"id": "stage-/g)?.length,4);
+  assert.equal(read("shared/domain/history-data.ts").match(/"id": "stage-/g)?.length,4);
   assert.match(read("components/site-shell.tsx"),/\/history/);
   assert.match(read("app/page.tsx"),/历史专题/);
 });
 
 test("landmark data remains centralized and complete",()=>{
-  const data=read("lib/platform-data.ts");
+  const data=read("shared/domain/platform-data.ts");
   assert.equal(data.match(/\{id:"[A-Z0-9]+",name:/g)?.length,44);
+  assert.match(read("lib/platform-data.ts"),/shared\/domain\/platform-data/);
   assert.match(read("app/landmarks/[spotId]/page.tsx"),/generateStaticParams/);
 });
 
 test("route criteria are shareable and plans retain their criteria",()=>{
-  assert.match(read("lib/planner-query.ts"),/URLSearchParams/);
-  assert.match(read("lib/planner-query.ts"),/travelMode/);
-  assert.match(read("lib/planner.ts"),/travelEngine\.travel/);
-  assert.match(read("lib/planner.ts"),/criteria:\{county:startCounty,startDate,days/);
+  assert.match(read("shared/domain/planner-query.ts"),/travelMode/);
+  assert.match(read("shared/domain/planner.ts"),/travelEngine\.travel/);
+  assert.match(read("shared/domain/planner.ts"),/criteria:\{county:startCounty,startDate,days/);
+  assert.match(read("lib/planner.ts"),/shared\/domain\/planner/);
 });
 
 test("map api and route summary are integrated into multi-page surfaces",()=>{

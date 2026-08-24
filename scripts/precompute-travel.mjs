@@ -28,7 +28,7 @@ import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(scriptDir, "..");
-const dataPath = path.join(root, "lib/platform-data.ts");
+const dataPath = path.join(root, "shared/domain/platform-data.ts");
 const matrixPath = path.join(root, "data/distance-matrix.json");
 
 const TK =
@@ -48,7 +48,7 @@ if (!TK) {
 }
 
 // ---------- 1. 从平台数据文件提取点位坐标 ----------
-// spots 目前集中在 lib/platform-data.ts；预计算脚本只需要 id/region/lat/lng。
+// spots 集中在共享领域层；预计算脚本只需要 id/region/lat/lng。
 function extractSpots(source) {
   const spots = [];
   // 匹配每个点位对象块：{id:"...",name:"...",...}
@@ -68,7 +68,7 @@ function extractSpots(source) {
 const source = fs.readFileSync(dataPath, "utf8");
 const spots = extractSpots(source);
 if (spots.length === 0) {
-  console.error("[precompute] 未能从 lib/platform-data.ts 提取到点位，请检查正则或改为读取 data/spots.json。");
+  console.error("[precompute] 未能从 shared/domain/platform-data.ts 提取到点位，请检查正则或改为读取 data/spots.json。");
   process.exit(1);
 }
 console.log(`[precompute] 提取到 ${spots.length} 个点位`);
