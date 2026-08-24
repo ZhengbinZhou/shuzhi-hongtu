@@ -31,25 +31,26 @@ export default function RouteMap ({
     { latitude: 0, longitude: 0 }
   )
   const points = spots.map((spot) => ({ latitude: spot.lat, longitude: spot.lng }))
+  const indexedSpots = spots.map((spot, sourceIndex) => ({ spot, sourceIndex }))
   const visibleSpots = overviewMode
     ? mapScale < 8
       ? []
       : mapScale < 9
-        ? spots.filter((spot) => spot.core)
-        : spots
-    : spots
-  const markers = visibleSpots.map((spot, index) => ({
-    id: index + 1,
+        ? indexedSpots.filter(({ spot }) => spot.core)
+        : indexedSpots
+    : indexedSpots
+  const markers = visibleSpots.map(({ spot, sourceIndex }) => ({
+    id: sourceIndex + 1,
     latitude: spot.lat,
     longitude: spot.lng,
-    title: `${index + 1}. ${spot.short}`,
+    title: `${sourceIndex + 1}. ${spot.short}`,
     iconPath: '/map/marker-anchor.png',
     width: 1,
     height: 1,
     anchor: { x: 0.5, y: 0.5 },
-    ariaLabel: `第 ${index + 1} 站，${spot.name}`,
+    ariaLabel: `第 ${sourceIndex + 1} 处，${spot.name}`,
     label: {
-      content: String(index + 1),
+      content: String(sourceIndex + 1),
       color: '#fffaf1',
       fontSize: compact ? 10 : 11,
       anchorX: compact ? -8 : -9,
@@ -77,15 +78,17 @@ export default function RouteMap ({
     }
   }))
   const openMarker = (markerId: number | string) => {
-    const spot = visibleSpots[Number(markerId) - 1]
+    const spot = spots[Number(markerId) - 1]
     if (spot) onSpotTap?.(spot)
   }
+  const legendLimit = compact ? 4 : 8
+  const legendSpots = overviewMode ? spots : spots.slice(0, legendLimit)
   const polyline = showPolyline && points.length > 1
     ? [{ points, color: '#851f25DD', width: 4, arrowLine: true, borderColor: '#fff7e9', borderWidth: 1 }]
     : []
 
   return (
-    <View className={`route-map-shell ${compact ? 'route-map-compact' : ''}`}>
+    <View className={`route-map-shell ${compact ? 'route-map-compact' : ''} ${overviewMode ? 'route-map-overview' : ''}`}>
       <View className='route-map-head'>
         <View><Text>MAP OVERVIEW</Text><Text>{title}</Text></View>
         <Text>{spots.length} 个点位</Text>
@@ -121,10 +124,11 @@ export default function RouteMap ({
         <Text>{overviewMode ? mapScale < 8 ? '放大查看核心点位' : mapScale < 9 ? '核心点位模式' : '全部点位与名称' : countyNames.join('、')}</Text>
       </View>
       <View className='route-map-legend'>
-        {spots.slice(0, compact ? 4 : 8).map((spot, index) => (
-          <View key={spot.id} onClick={() => onSpotTap?.(spot)}><Text>{index + 1}</Text><Text>{spot.short}</Text></View>
+        {overviewMode && <View className='route-map-legend-head'><Text>全部 {spots.length} 处点位</Text><Text>编号与地图一致</Text></View>}
+        {legendSpots.map((spot, index) => (
+          <View className='route-map-legend-item' key={spot.id} onClick={() => onSpotTap?.(spot)}><Text>{index + 1}</Text><Text>{spot.short}</Text></View>
         ))}
-        {spots.length > (compact ? 4 : 8) && <Text className='route-map-more'>另有 {spots.length - (compact ? 4 : 8)} 处点位，可在地图中缩放查看</Text>}
+        {!overviewMode && spots.length > legendLimit && <Text className='route-map-more'>另有 {spots.length - legendLimit} 处点位，可在地图中缩放查看</Text>}
       </View>
     </View>
   )

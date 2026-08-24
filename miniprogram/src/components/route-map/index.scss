@@ -71,7 +71,26 @@
   gap: 12rpx;
 }
 
-.route-map-legend > view {
+.route-map-legend-head {
+  width: 100%;
+  margin-bottom: 8rpx;
+  padding-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #851f25;
+  border-bottom: 1rpx solid #e0d0bc;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.route-map-legend-head text:last-child {
+  color: #9a877b;
+  font-size: 17rpx;
+  font-weight: 400;
+}
+
+.route-map-legend-item {
   width: calc(50% - 6rpx);
   display: flex;
   align-items: center;
@@ -80,7 +99,7 @@
   font-size: 19rpx;
 }
 
-.route-map-legend > view text:first-child {
+.route-map-legend-item text:first-child {
   width: 32rpx;
   height: 32rpx;
   flex: 0 0 auto;
@@ -92,6 +111,13 @@
   border-radius: 50%;
   font-family: Georgia, serif;
   font-size: 16rpx;
+}
+
+.route-map-legend-item text:last-child {
+  min-width: 0;
+  flex: 1;
+  line-height: 1.45;
+  white-space: normal;
 }
 
 .route-map-more {

@@ -136,8 +136,19 @@ test("mini map markers use restrained numbered labels instead of landmark photos
   assert.doesNotMatch(routeMap, /iconPath:\s*spot\.image/);
   assert.match(routeMap, /iconPath:\s*['"]\/map\/marker-anchor\.png['"]/);
   assert.match(routeMap, /label:\s*\{/);
-  assert.match(routeMap, /content:\s*String\(index \+ 1\)/);
+  assert.match(routeMap, /content:\s*String\(sourceIndex \+ 1\)/);
   assert.match(routeMap, /bgColor:\s*['"]#851f25['"]/);
+});
+
+test("overview map renders a complete legend with stable point numbering", () => {
+  const routeMap = readMini("src/components/route-map/index.tsx");
+
+  assert.match(routeMap, /const legendSpots = overviewMode \? spots : spots\.slice/);
+  assert.match(routeMap, /\{legendSpots\.map\(\(spot, index\)/);
+  assert.match(routeMap, /全部 \{spots\.length\} 处点位/);
+  assert.match(routeMap, /id: sourceIndex \+ 1/);
+  assert.match(routeMap, /spots\[Number\(markerId\) - 1\]/);
+  assert.doesNotMatch(routeMap, /\{spots\.slice\(0, compact \? 4 : 8\)\.map/);
 });
 
 test("history planner handoff preserves chapter metadata and result summary", () => {
