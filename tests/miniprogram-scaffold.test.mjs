@@ -43,6 +43,14 @@ test("wechat developer tools can resolve the compiled output and entry page", ()
   assert.match(appConfig, /pages\/index\/index/);
 });
 
+test("wechat developer tools can load the Taro output when the repository root is imported", () => {
+  const projectConfig = JSON.parse(
+    fs.readFileSync(path.join(root, "project.config.json"), "utf8"),
+  );
+
+  assert.equal(projectConfig.miniprogramRoot, "miniprogram/dist/");
+});
+
 test("wechat miniprogram consumes the shared domain layer", () => {
   const buildConfig = fs.readFileSync(
     path.join(miniRoot, "config/index.ts"),
