@@ -9,7 +9,10 @@ const requiredPages = [
   'pages/planner/index',
   'pages/landmarks/index',
   'pages/saved/index',
-  'pages/route-detail/index'
+  'pages/route-detail/index',
+  'pages/landmark-detail/index',
+  'pages/history/index',
+  'pages/methodology/index'
 ]
 
 const pageExtensions = ['.js', '.json', '.wxml', '.wxss']

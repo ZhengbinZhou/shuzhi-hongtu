@@ -1,8 +1,11 @@
 import {
+  buildRouteServices,
   generatePlans,
   parsePlannerCriteria,
   plannerDefaults,
   plannerQuery,
+  splitDays,
+  spots,
   type Plan,
   type PlannerCriteria
 } from '@shared/domain'
@@ -27,7 +30,8 @@ export function defaultSharedPlan (): Plan {
 }
 
 export function miniPlanPath (plan: Plan): string {
-  return `/pages/route-detail/index?planId=${encodeURIComponent(plan.id)}&${plannerQuery(plan.criteria)}`
+  const spotIds = encodeURIComponent(plan.spots.map((spot) => spot.id).join(','))
+  return `/pages/route-detail/index?planId=${encodeURIComponent(plan.id)}&${plannerQuery(plan.criteria)}&spotIds=${spotIds}`
 }
 
 export function resolvePlanFromParams (params: RouteParams): Plan | null {
@@ -38,5 +42,22 @@ export function resolvePlanFromParams (params: RouteParams): Plan | null {
     planId = decodeURIComponent(rawPlanId)
   } catch {}
   const criteria = parsePlannerCriteria(params)
-  return plansFor(criteria).find((plan) => plan.id === planId) ?? null
+  const basePlan = plansFor(criteria).find((plan) => plan.id === planId)
+  if (!basePlan) return null
+  const rawSpotIds = Array.isArray(params.spotIds) ? params.spotIds[0] : params.spotIds
+  if (!rawSpotIds) return basePlan
+  const requestedIds = Array.from(new Set(rawSpotIds.split(',').filter(Boolean)))
+  const routeSpots = requestedIds
+    .map((spotId) => spots.find((spot) => spot.id === spotId))
+    .filter((spot): spot is typeof spots[number] => Boolean(spot))
+  if (routeSpots.length < 2 || routeSpots.length !== requestedIds.length) return basePlan
+  const days = splitDays(routeSpots, criteria.days, criteria.startDate, criteria.travelMode)
+  const restoredSpots = days.flat()
+  if (restoredSpots.length < 2) return basePlan
+  return {
+    ...basePlan,
+    spots: restoredSpots,
+    days,
+    services: buildRouteServices(restoredSpots)
+  }
 }

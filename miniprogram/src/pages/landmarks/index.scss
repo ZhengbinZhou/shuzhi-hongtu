@@ -311,20 +311,32 @@
   font-family: Georgia, serif;
 }
 
-.detail-map-action {
-  width: 100%;
-  height: 72rpx;
+.detail-actions {
   margin-top: 24rpx;
-  padding: 0 20rpx;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #fff8eb;
-  background: #75171d;
-  font-size: 21rpx;
+  gap: 10rpx;
 }
 
-.detail-map-action text {
+.detail-map-action,
+.detail-full-action {
+  height: 72rpx;
+  padding: 0 20rpx;
+  flex: 1;
+  font-size: 20rpx;
+}
+
+.detail-map-action {
+  color: #75171d;
+  background: transparent;
+  border: 1rpx solid #b89675;
+}
+
+.detail-full-action {
+  color: #fff8eb;
+  background: #75171d;
+}
+
+.detail-full-action text {
   color: #d9ae6f;
 }
 

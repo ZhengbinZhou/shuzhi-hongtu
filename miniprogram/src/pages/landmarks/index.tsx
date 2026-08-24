@@ -28,6 +28,8 @@ export default function LandmarksPage () {
     }).catch(() => Taro.showToast({ title: '未能打开地图，请稍后重试', icon: 'none' }))
   }
 
+  const openFullDetails = (spot: Spot) => Taro.navigateTo({ url: `/pages/landmark-detail/index?spotId=${spot.id}` })
+
   return (
     <View className='page-shell landmarks-page'>
       <View className='catalogue-hero'>
@@ -106,7 +108,10 @@ export default function LandmarksPage () {
                         <View key={theme}><Text>{theme}</Text><Text>{score}/5</Text></View>
                       ))}
                   </View>
-                  <Button className='tap-button detail-map-action' onClick={() => openLocation(spot)}>地图查看 <Text>→</Text></Button>
+                  <View className='detail-actions'>
+                    <Button className='tap-button detail-map-action' onClick={() => openLocation(spot)}>地图查看</Button>
+                    <Button className='tap-button detail-full-action' onClick={() => openFullDetails(spot)}>完整资料 <Text>→</Text></Button>
+                  </View>
                 </View>
               )}
             </View>

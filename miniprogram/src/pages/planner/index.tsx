@@ -13,6 +13,7 @@ import {
   type PlannerCriteria
 } from '@shared/domain'
 import { loadSavedRoutes, saveRoute, setActiveRoute } from '../../services/route-storage'
+import { takePlannerPreset } from '../../services/planner-preset'
 import { miniPlanPath } from '../../utils/route-link'
 import './index.scss'
 
@@ -43,9 +44,17 @@ export default function PlannerPage () {
   const [plans, setPlans] = useState<Plan[]>([])
   const [hasGenerated, setHasGenerated] = useState(false)
   const [savedPlanIds, setSavedPlanIds] = useState<string[]>([])
+  const [presetLabel, setPresetLabel] = useState('')
 
   useDidShow(() => {
     setSavedPlanIds(loadSavedRoutes().map((item) => item.plan.id))
+    const preset = takePlannerPreset()
+    if (preset) {
+      setCriteria(preset.criteria)
+      setPlans([])
+      setHasGenerated(false)
+      setPresetLabel(preset.label)
+    }
   })
 
   function updateCriteria<K extends keyof PlannerCriteria> (key: K, value: PlannerCriteria[K]) {
@@ -84,6 +93,13 @@ export default function PlannerPage () {
         <Text className='planner-title'>告诉我们，{`\n`}你想怎样读懂这段历史</Text>
         <Text className='planner-intro'>先校验开放日期与每日时长，再按主题和体验偏好挑选点位。</Text>
       </View>
+
+      {presetLabel && (
+        <View className='planner-preset-note'>
+          <View><Text>历史专题已带入</Text><Text>{presetLabel} · 可继续调整条件后生成</Text></View>
+          <Text onClick={() => setPresetLabel('')}>×</Text>
+        </View>
+      )}
 
       <View className='planner-form'>
         <View className='form-heading'>

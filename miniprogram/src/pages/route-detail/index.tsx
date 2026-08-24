@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import Taro, { useLoad, useShareAppMessage } from '@tarojs/taro'
-import { Button, Progress, Text, View } from '@tarojs/components'
+import { Button, Canvas, Progress, Text, View } from '@tarojs/components'
 import { dateAt, travelModes, type Plan, type Spot } from '@shared/domain'
+import RouteMap from '../../components/route-map'
 import {
   getActiveRoute,
   loadCompletedSpotIds,
@@ -10,11 +11,20 @@ import {
   setActiveRoute,
   toggleCompletedSpot
 } from '../../services/route-storage'
+import { openExternalLink } from '../../utils/external-link'
 import { miniPlanPath, resolvePlanFromParams } from '../../utils/route-link'
+import {
+  formatDuration,
+  moveRouteSpot,
+  removeRouteSpot,
+  replaceRouteSpot,
+  routeSummary
+} from '../../utils/route-plan'
 import { routeProgress } from '../../utils/route-state'
 import './index.scss'
 
 type RouteParams = Record<string, string | string[] | undefined>
+type PosterContext = ReturnType<typeof Taro.createCanvasContext>
 
 const dayLabel = (startDate: string, offset: number) => {
   const date = dateAt(startDate, offset)
@@ -29,6 +39,23 @@ const openSpotLocation = (spot: Spot) => {
     address: `${spot.region} · ${spot.county}`,
     scale: 16
   }).catch(() => Taro.showToast({ title: '未能打开地图，请稍后重试', icon: 'none' }))
+}
+
+function drawWrappedText (context: PosterContext, text: string, x: number, startY: number, maxWidth: number, lineHeight: number, maxLines = 3): number {
+  const lines: string[] = []
+  let current = ''
+  for (const character of text) {
+    if (context.measureText(current + character).width > maxWidth && current) {
+      lines.push(current)
+      current = character
+      if (lines.length === maxLines) break
+    } else {
+      current += character
+    }
+  }
+  if (current && lines.length < maxLines) lines.push(current)
+  lines.forEach((line, index) => context.fillText(line, x, startY + index * lineHeight))
+  return startY + lines.length * lineHeight
 }
 
 export default function RouteDetailPage () {
@@ -63,6 +90,88 @@ export default function RouteDetailPage () {
     setCompletedIds(toggleCompletedSpot(plan, spotId))
   }
 
+  const applyEditedPlan = (nextPlan: Plan, message: string) => {
+    if (nextPlan === plan) {
+      Taro.showToast({ title: '当前操作不可用', icon: 'none' })
+      return
+    }
+    setPlan(nextPlan)
+    setActiveRoute(nextPlan)
+    setCompletedIds((current) => current.filter((id) => nextPlan.spots.some((spot) => spot.id === id)))
+    setIsSaved(false)
+    Taro.showToast({ title: message, icon: 'none' })
+  }
+
+  const generatePoster = () => {
+    if (!plan) return
+    Taro.showLoading({ title: '生成路线海报' })
+    const context = Taro.createCanvasContext('route-poster')
+    context.setFillStyle('#f5eddf')
+    context.fillRect(0, 0, 600, 900)
+    context.setFillStyle('#67151b')
+    context.fillRect(0, 0, 600, 245)
+    context.setFillStyle('#d6a45b')
+    context.setFontSize(18)
+    context.fillText('JIANGXI · RED MEMORY', 38, 48)
+    context.setFillStyle('#fff8eb')
+    context.setFontSize(38)
+    let y = drawWrappedText(context, plan.name, 38, 100, 520, 48, 2)
+    context.setFillStyle('rgba(255,248,235,.72)')
+    context.setFontSize(18)
+    y = drawWrappedText(context, plan.angle, 38, y + 12, 520, 28, 2)
+    context.setFillStyle('#2d211d')
+    context.setFontSize(24)
+    context.fillText(`${plan.days.length} 天 · ${plan.spots.length} 个点位 · ${plan.score} 分匹配`, 38, 292)
+    context.setStrokeStyle('#d8c6af')
+    context.beginPath()
+    context.moveTo(38, 318)
+    context.lineTo(562, 318)
+    context.stroke()
+    let stopY = 360
+    plan.spots.slice(0, 9).forEach((spot, index) => {
+      context.setFillStyle('#851f25')
+      context.beginPath()
+      context.arc(55, stopY - 7, 13, 0, Math.PI * 2)
+      context.fill()
+      context.setFillStyle('#fff8eb')
+      context.setFontSize(13)
+      context.fillText(String(index + 1), 51, stopY - 2)
+      context.setFillStyle('#33241f')
+      context.setFontSize(21)
+      context.fillText(spot.short, 82, stopY)
+      context.setFillStyle('#927d71')
+      context.setFontSize(15)
+      context.fillText(`${spot.region} · ${spot.county} · ${spot.minutes}分钟`, 82, stopY + 24)
+      stopY += 57
+    })
+    if (plan.spots.length > 9) {
+      context.setFillStyle('#927d71')
+      context.setFontSize(16)
+      context.fillText(`另有 ${plan.spots.length - 9} 个点位，请在小程序内查看`, 82, stopY)
+    }
+    context.setFillStyle('#2c211e')
+    context.fillRect(0, 836, 600, 64)
+    context.setFillStyle('#d6a45b')
+    context.setFontSize(18)
+    context.fillText('数智-红途 · 江西红色文旅智导', 38, 875)
+    context.draw(false, async () => {
+      try {
+        const result = await Taro.canvasToTempFilePath({ canvasId: 'route-poster', width: 600, height: 900, destWidth: 1200, destHeight: 1800 })
+        Taro.hideLoading()
+        const action = await Taro.showModal({ title: '路线海报已生成', content: '可先预览，或直接保存到手机相册。', cancelText: '预览', confirmText: '保存相册', confirmColor: '#851f25' })
+        if (action.confirm) {
+          await Taro.saveImageToPhotosAlbum({ filePath: result.tempFilePath })
+          Taro.showToast({ title: '海报已保存', icon: 'success' })
+        } else {
+          await Taro.previewImage({ urls: [result.tempFilePath], current: result.tempFilePath })
+        }
+      } catch {
+        Taro.hideLoading()
+        Taro.showModal({ title: '海报未能保存', content: '请在系统设置中允许访问相册后重试。', showCancel: false })
+      }
+    })
+  }
+
   if (!plan) {
     return (
       <View className='page-shell route-detail-page route-missing'>
@@ -75,6 +184,7 @@ export default function RouteDetailPage () {
 
   const progress = routeProgress(plan, completedIds)
   const travelLabel = travelModes.find((mode) => mode.value === plan.criteria.travelMode)?.label ?? '自驾'
+  const summary = routeSummary(plan.spots, plan.criteria.travelMode)
 
   return (
     <View className='page-shell route-detail-page'>
@@ -99,6 +209,49 @@ export default function RouteDetailPage () {
         <Text className='execution-count'>已完成 {progress.completed} / {progress.total} 站</Text>
       </View>
 
+      <View className='route-dimensions'>
+        <View className='route-block-title'><Text>MATCH SCORE</Text><Text>路线为何适合你</Text></View>
+        {plan.dimensions.map((item) => (
+          <View className='route-dimension-row' key={item.label}>
+            <Text>{item.label}</Text><View><View style={{ width: `${item.value}%` }} /></View><Text>{item.value}%</Text>
+          </View>
+        ))}
+      </View>
+
+      <View className='route-map-wrap'>
+        <RouteMap spots={plan.spots} title='路线点位与行进顺序' onSpotTap={openSpotLocation} />
+      </View>
+
+      <View className='travel-board'>
+        <View className='travel-board-head'>
+          <View className='route-block-title'><Text>ROUTE PLAN</Text><Text>路段摘要 · {travelLabel}</Text></View>
+          <View className='travel-stats'>
+            <View><Text>{summary.driveKm.toFixed(0)}</Text><Text>公里车程</Text></View>
+            <View><Text>{formatDuration(summary.driveMinutes)}</Text><Text>路上时间</Text></View>
+            <View><Text>{formatDuration(summary.visitMinutes)}</Text><Text>参观时长</Text></View>
+          </View>
+        </View>
+        <View className='travel-legs'>
+          {summary.legs.map((leg, index) => (
+            <View className='travel-leg' key={`${leg.from.id}-${leg.to.id}`}>
+              <Text>{index + 1}</Text>
+              <View className='travel-leg-copy'>
+                <Text>{leg.from.short} → {leg.to.short}</Text>
+                <Text>{leg.result.km.toFixed(1)} km · {formatDuration(leg.result.minutes)}</Text>
+                {leg.result.segments?.map((segment, segmentIndex) => (
+                  <View className='travel-segment' key={`${segment.kind}-${segmentIndex}`}>
+                    <Text>{segment.kind === 'rail' ? '高铁/火车' : segment.kind === 'coach' ? '客运大巴' : '接驳'}</Text>
+                    <Text>{segment.from} → {segment.to}</Text>
+                    <Text>{formatDuration(segment.minutes)}</Text>
+                  </View>
+                ))}
+                {leg.result.source === 'intercity-fallback' && <Text className='travel-warning'>跨市段暂无班次数据，暂按公路里程估算。</Text>}
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
       <View className='route-days-detail'>
         {plan.days.map((day, dayIndex) => (
           <View className='route-day-card' key={`${plan.id}-${dayIndex}`}>
@@ -110,6 +263,7 @@ export default function RouteDetailPage () {
             <View className='route-day-stops'>
               {day.map((spot, stopIndex) => {
                 const completed = completedIds.includes(spot.id)
+                const routeIndex = plan.spots.findIndex((item) => item.id === spot.id)
                 return (
                   <View className={`execution-stop ${completed ? 'execution-stop-complete' : ''}`} key={spot.id}>
                     <Button className='tap-button completion-button' onClick={() => toggleSpot(spot.id)}>{completed ? '✓' : stopIndex + 1}</Button>
@@ -117,8 +271,17 @@ export default function RouteDetailPage () {
                       <Text>{spot.name}</Text>
                       <Text>{spot.region} · {spot.county} · 建议 {spot.minutes} 分钟</Text>
                       <Text>{spot.intro}</Text>
+                      <View className='edit-actions'>
+                        <Button className='tap-button' disabled={routeIndex === 0} onClick={() => applyEditedPlan(moveRouteSpot(plan, routeIndex, -1), '已上移点位')}>上移</Button>
+                        <Button className='tap-button' disabled={routeIndex === plan.spots.length - 1} onClick={() => applyEditedPlan(moveRouteSpot(plan, routeIndex, 1), '已下移点位')}>下移</Button>
+                        {!spot.core && <Button className='tap-button' onClick={() => applyEditedPlan(replaceRouteSpot(plan, routeIndex), '已替换同区域点位')}>替换</Button>}
+                        {!spot.core && <Button className='tap-button edit-danger' onClick={() => applyEditedPlan(removeRouteSpot(plan, routeIndex), '已删除点位')}>删除</Button>}
+                      </View>
                     </View>
-                    <Button className='tap-button map-button' onClick={() => openSpotLocation(spot)}>地图</Button>
+                    <View className='stop-side-actions'>
+                      <Button className='tap-button map-button' onClick={() => openSpotLocation(spot)}>地图</Button>
+                      <Button className='tap-button detail-button' onClick={() => Taro.navigateTo({ url: `/pages/landmark-detail/index?spotId=${spot.id}` })}>详情</Button>
+                    </View>
                   </View>
                 )
               })}
@@ -132,11 +295,32 @@ export default function RouteDetailPage () {
         <Text>{plan.background}</Text>
       </View>
 
+      <View className='route-services'>
+        <View className='service-column'>
+          <View className='route-block-title'><Text>STAY</Text><Text>住宿参考</Text></View>
+          {plan.services.hotels.map((link) => (
+            <Button className='tap-button service-link' key={link.href} onClick={() => openExternalLink(link.href, link.label)}>
+              <View><Text>{link.label}</Text><Text>{link.note}</Text></View><Text>复制链接 →</Text>
+            </Button>
+          ))}
+        </View>
+        <View className='service-column'>
+          <View className='route-block-title'><Text>TRANSFER</Text><Text>包车与接驳</Text></View>
+          {plan.services.charters.map((link) => (
+            <Button className='tap-button service-link' key={link.href} onClick={() => openExternalLink(link.href, link.label)}>
+              <View><Text>{link.label}</Text><Text>{link.note}</Text></View><Text>复制链接 →</Text>
+            </Button>
+          ))}
+        </View>
+      </View>
+
       <View className='route-detail-actions'>
         <Button className={`tap-button route-save ${isSaved ? 'route-saved' : ''}`} onClick={saveCurrentRoute}>{isSaved ? '已保存' : '保存路线'}</Button>
         <Button className='tap-button route-share' openType='share'>分享给同行人</Button>
+        <Button className='tap-button route-poster' onClick={generatePoster}>生成路线海报</Button>
       </View>
 
+      <Canvas canvasId='route-poster' className='route-poster-canvas' style={{ width: '600px', height: '900px' }} />
       <Text className='route-disclaimer'>开放时间与通行时间为演示资料，出发前请以场馆公告和实时路况为准。</Text>
     </View>
   )

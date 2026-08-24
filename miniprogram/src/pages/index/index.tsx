@@ -1,6 +1,7 @@
 import Taro from '@tarojs/taro'
 import { Button, Image, ScrollView, Text, View } from '@tarojs/components'
 import { generatePlans, plannerDefaults, regions, spots } from '@shared/domain'
+import RouteMap from '../../components/route-map'
 import './index.scss'
 
 const criteria = plannerDefaults()
@@ -21,6 +22,7 @@ const landmarkColumns = Array.from(
 )
 
 const switchTab = (url: string) => Taro.switchTab({ url })
+const openSpotDetails = (spotId: string) => Taro.navigateTo({ url: `/pages/landmark-detail/index?spotId=${spotId}` })
 
 export default function Index () {
   return (
@@ -56,6 +58,18 @@ export default function Index () {
         <View><Text className='data-value'>{spots.length}</Text><Text className='data-label'>处红色点位</Text></View>
         <View><Text className='data-value'>{regions.length - 1}</Text><Text className='data-label'>个主题区域</Text></View>
         <View><Text className='data-value'>{recommendedPlans.length}</Text><Text className='data-label'>条今日推荐</Text></View>
+      </View>
+
+      <View className='home-map-section'>
+        <View className='section-title-row'>
+          <View>
+            <Text className='section-kicker'>JIANGXI OVERVIEW / 00</Text>
+            <Text className='section-heading'>44 处点位，一张图看全</Text>
+          </View>
+        </View>
+        <View className='home-map-wrap'>
+          <RouteMap spots={spots} title='江西红色点位总览' showPolyline={false} onSpotTap={(spot) => openSpotDetails(spot.id)} />
+        </View>
       </View>
 
       <View className='home-section route-section'>
@@ -106,7 +120,7 @@ export default function Index () {
             {landmarkColumns.map((column, columnIndex) => (
               <View className='landmark-column' key={`column-${columnIndex}`}>
                 {column.map((spot, rowIndex) => (
-                  <View className='landmark-card' key={spot.id} onClick={() => switchTab('/pages/landmarks/index')}>
+                  <View className='landmark-card' key={spot.id} onClick={() => openSpotDetails(spot.id)}>
                     <Image className='landmark-image' src={spot.image} mode='aspectFill' lazyLoad />
                     <View className='landmark-card-copy'>
                       <Text className='landmark-index'>{String(columnIndex * 2 + rowIndex + 1).padStart(2, '0')}</Text>
@@ -128,6 +142,10 @@ export default function Index () {
         <Text className='method-title'>先判断能不能走，再决定值不值得走。</Text>
         <View className='method-steps'>
           <Text>时间可行</Text><Text>内容匹配</Text><Text>历史校验</Text><Text>路线去重</Text>
+        </View>
+        <View className='method-actions'>
+          <Button className='tap-button' onClick={() => Taro.navigateTo({ url: '/pages/history/index' })}>阅读历史专题</Button>
+          <Button className='tap-button' onClick={() => Taro.navigateTo({ url: '/pages/methodology/index' })}>查看匹配方法</Button>
         </View>
       </View>
     </View>
