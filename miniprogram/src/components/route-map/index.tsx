@@ -1,5 +1,7 @@
+import { useMemo, useState } from 'react'
 import { Map, Text, View } from '@tarojs/components'
 import type { Spot } from '@shared/domain'
+import { countyPolygons, coverageCountyNames } from '../../utils/county-polygons'
 import './index.scss'
 
 type RouteMapProps = {
@@ -7,6 +9,7 @@ type RouteMapProps = {
   title?: string
   showPolyline?: boolean
   compact?: boolean
+  overviewMode?: boolean
   onSpotTap?: (spot: Spot) => void
 }
 
@@ -15,8 +18,12 @@ export default function RouteMap ({
   title = '点位地图',
   showPolyline = true,
   compact = false,
+  overviewMode = false,
   onSpotTap
 }: RouteMapProps) {
+  const [mapScale, setMapScale] = useState(overviewMode ? 7 : 8)
+  const polygons = useMemo(() => countyPolygons(spots), [spots])
+  const countyNames = useMemo(() => coverageCountyNames(spots), [spots])
   if (spots.length === 0) return null
 
   const center = spots.reduce(
@@ -24,7 +31,14 @@ export default function RouteMap ({
     { latitude: 0, longitude: 0 }
   )
   const points = spots.map((spot) => ({ latitude: spot.lat, longitude: spot.lng }))
-  const markers = spots.map((spot, index) => ({
+  const visibleSpots = overviewMode
+    ? mapScale < 8
+      ? []
+      : mapScale < 9
+        ? spots.filter((spot) => spot.core)
+        : spots
+    : spots
+  const markers = visibleSpots.map((spot, index) => ({
     id: index + 1,
     latitude: spot.lat,
     longitude: spot.lng,
@@ -44,7 +58,7 @@ export default function RouteMap ({
       borderColor: '#b77f3f',
       bgColor: '#fffaf1',
       padding: 5,
-      display: 'BYCLICK' as const,
+      display: overviewMode && mapScale >= 8 ? 'ALWAYS' as const : 'BYCLICK' as const,
       textAlign: 'center' as const
     }
   }))
@@ -62,20 +76,31 @@ export default function RouteMap ({
         className='route-map'
         longitude={center.longitude}
         latitude={center.latitude}
-        scale={7}
+        scale={overviewMode ? mapScale : 8}
         markers={markers}
+        polygons={polygons}
         polyline={polyline}
-        includePoints={points}
+        includePoints={overviewMode && mapScale > 7 ? undefined : points}
         showScale
         enableZoom
         enableScroll
         onError={() => undefined}
+        onRegionChange={(event) => {
+          const detail = event.detail as unknown as { type?: string; scale?: number; detail?: { scale?: number } }
+          if (!overviewMode || detail.type !== 'end') return
+          const nextScale = Number(detail.scale ?? detail.detail?.scale)
+          if (Number.isFinite(nextScale)) setMapScale(nextScale)
+        }}
         onMarkerTap={(event) => {
           const markerId = Number(event.detail.markerId)
-          const spot = spots[markerId - 1]
+          const spot = visibleSpots[markerId - 1]
           if (spot) onSpotTap?.(spot)
         }}
       />
+      <View className='route-map-coverage'>
+        <Text>资源覆盖县区 · {countyNames.length}</Text>
+        <Text>{overviewMode ? mapScale < 8 ? '放大查看核心点位' : mapScale < 9 ? '核心点位模式' : '全部点位与名称' : countyNames.join('、')}</Text>
+      </View>
       <View className='route-map-legend'>
         {spots.slice(0, compact ? 4 : 8).map((spot, index) => (
           <View key={spot.id} onClick={() => onSpotTap?.(spot)}><Text>{index + 1}</Text><Text>{spot.short}</Text></View>

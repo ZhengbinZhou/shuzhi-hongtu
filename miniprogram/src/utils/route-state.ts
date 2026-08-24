@@ -1,6 +1,7 @@
 import type { Plan } from '@shared/domain'
 
 export type SavedRoute = {
+  id: string
   plan: Plan
   savedAt: string
 }
@@ -21,20 +22,31 @@ export function isPlan (value: unknown): value is Plan {
 
 export function parseSavedRoutes (value: unknown): SavedRoute[] {
   if (!Array.isArray(value)) return []
-  return value.filter((item): item is SavedRoute => (
-    isRecord(item) && typeof item.savedAt === 'string' && isPlan(item.plan)
-  ))
+  return value.reduce<SavedRoute[]>((routes, item, index) => {
+    if (!isRecord(item) || typeof item.savedAt !== 'string' || !isPlan(item.plan)) return routes
+    routes.push({
+      id: typeof item.id === 'string' ? item.id : `legacy-${item.plan.id}-${item.savedAt}-${index}`,
+      plan: item.plan,
+      savedAt: item.savedAt
+    })
+    return routes
+  }, [])
 }
 
-export function upsertSavedRoute (routes: SavedRoute[], plan: Plan, savedAt = new Date().toISOString()): SavedRoute[] {
+export function upsertSavedRoute (
+  routes: SavedRoute[],
+  plan: Plan,
+  savedAt = new Date().toISOString(),
+  savedId = `saved-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+): SavedRoute[] {
   return [
-    { plan, savedAt },
-    ...routes.filter((item) => item.plan.id !== plan.id)
+    { id: savedId, plan, savedAt },
+    ...routes.filter((item) => item.id !== savedId)
   ].slice(0, MAX_SAVED_ROUTES)
 }
 
-export function removeSavedRoute (routes: SavedRoute[], planId: string): SavedRoute[] {
-  return routes.filter((item) => item.plan.id !== planId)
+export function removeSavedRoute (routes: SavedRoute[], savedId: string): SavedRoute[] {
+  return routes.filter((item) => item.id !== savedId)
 }
 
 export function normalizeCompletedSpotIds (plan: Plan, value: unknown): string[] {

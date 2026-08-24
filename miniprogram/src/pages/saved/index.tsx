@@ -30,13 +30,13 @@ export default function SavedRoutesPage () {
     Taro.navigateTo({ url: miniPlanPath(item.plan) })
   }
 
-  const confirmRemove = async (planId: string) => {
+  const confirmRemove = async (savedId: string) => {
     const result = await Taro.showModal({
       title: '删除这条路线？',
       content: '路线执行进度仍会保留，重新保存后可以继续。',
       confirmColor: '#851f25'
     })
-    if (result.confirm) setRoutes(removeRoute(planId))
+    if (result.confirm) setRoutes(removeRoute(savedId))
   }
 
   return (
@@ -62,7 +62,7 @@ export default function SavedRoutesPage () {
           {routes.map((item, index) => {
             const progress = routeProgress(item.plan, loadCompletedSpotIds(item.plan))
             return (
-              <View className='saved-card' key={item.plan.id}>
+              <View className='saved-card' key={item.id}>
                 <View className='saved-card-head'>
                   <Text>0{index + 1}</Text>
                   <Text>{savedDate(item.savedAt)} 保存</Text>
@@ -85,7 +85,7 @@ export default function SavedRoutesPage () {
                 </View>
                 <View className='saved-actions'>
                   <Button className='tap-button saved-open' onClick={() => openRoute(item)}>查看并执行 <Text>→</Text></Button>
-                  <Button className='tap-button saved-remove' onClick={() => confirmRemove(item.plan.id)}>删除</Button>
+                  <Button className='tap-button saved-remove' onClick={() => confirmRemove(item.id)}>删除</Button>
                 </View>
               </View>
             )

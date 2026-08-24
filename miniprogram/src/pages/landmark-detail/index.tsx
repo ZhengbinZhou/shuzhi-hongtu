@@ -7,6 +7,7 @@ import { openExternalLink } from '../../utils/external-link'
 import './index.scss'
 
 type PageParams = { spotId?: string }
+const weekdayNames = '日一二三四五六'
 
 export default function LandmarkDetailPage () {
   const [spot, setSpot] = useState<Spot | null>(null)
@@ -49,7 +50,11 @@ export default function LandmarkDetailPage () {
           <Text>{spot.region} · {spot.county}</Text>
           <Text>{spot.name}</Text>
           <Text>{spot.intro}</Text>
-          <View><Text>建议停留 {spot.minutes} 分钟</Text><Text>{spot.core ? '核心历史节点' : '辅助体验点位'}</Text></View>
+          <View>
+            <Text>建议停留 {spot.minutes} 分钟</Text>
+            <Text>{spot.core ? '核心历史节点' : '辅助体验点位'}</Text>
+            <Text>固定闭馆：{spot.closed.length ? `每周${spot.closed.map((day) => weekdayNames[day]).join('、')}` : '暂无固定闭馆日'}</Text>
+          </View>
         </View>
       </View>
 
@@ -60,6 +65,7 @@ export default function LandmarkDetailPage () {
           <View className='visit-list'>
             <View><Text>详细地址</Text><Text>{detail.address}</Text></View>
             <View><Text>开放时间</Text><Text>{detail.openingHours}</Text></View>
+            <View><Text>固定闭馆</Text><Text>{spot.closed.length ? `每周${spot.closed.map((day) => weekdayNames[day]).join('、')}` : '暂无固定闭馆日'}</Text></View>
             <View><Text>开放性质</Text><Text>{detail.openNote}</Text></View>
             <View><Text>预约要求</Text><Text>{detail.reservationRequired}</Text></View>
             <View><Text>预约方式</Text><Text>{detail.reservationMethod}</Text></View>

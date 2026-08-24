@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 import { Button, Image, ScrollView, Text, View } from '@tarojs/components'
-import { generatePlans, plannerDefaults, regions, spots } from '@shared/domain'
+import { generatePlans, plannerDefaults, plannerQuery, regions, spots } from '@shared/domain'
 import RouteMap from '../../components/route-map'
 import './index.scss'
 
@@ -14,7 +14,7 @@ const recommendedPlans = generatePlans(
   criteria.experience,
   criteria.purpose,
   criteria.travelMode
-).slice(0, 3)
+).slice(0, 5)
 
 const landmarkColumns = Array.from(
   { length: Math.ceil(spots.length / 2) },
@@ -22,6 +22,7 @@ const landmarkColumns = Array.from(
 )
 
 const switchTab = (url: string) => Taro.switchTab({ url })
+const openDefaultRoutes = () => Taro.navigateTo({ url: `/pages/routes/index?${plannerQuery(criteria)}` })
 const openSpotDetails = (spotId: string) => Taro.navigateTo({ url: `/pages/landmark-detail/index?spotId=${spotId}` })
 
 export default function Index () {
@@ -68,7 +69,7 @@ export default function Index () {
           </View>
         </View>
         <View className='home-map-wrap'>
-          <RouteMap spots={spots} title='江西红色点位总览' showPolyline={false} onSpotTap={(spot) => openSpotDetails(spot.id)} />
+          <RouteMap spots={spots} title='江西红色点位总览' showPolyline={false} overviewMode onSpotTap={(spot) => openSpotDetails(spot.id)} />
         </View>
       </View>
 
@@ -78,7 +79,7 @@ export default function Index () {
             <Text className='section-kicker'>SMART JOURNEY / 01</Text>
             <Text className='section-heading'>从一条读得懂的路线开始</Text>
           </View>
-          <Button className='tap-button section-link' onClick={() => switchTab('/pages/planner/index')}>去规划</Button>
+          <Button className='tap-button section-link' onClick={openDefaultRoutes}>看 5 条</Button>
         </View>
 
         <ScrollView className='route-scroll' scrollX enhanced showScrollbar={false}>

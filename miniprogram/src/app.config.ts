@@ -2,6 +2,7 @@ export default defineAppConfig({
   pages: [
     'pages/index/index',
     'pages/planner/index',
+    'pages/routes/index',
     'pages/landmarks/index',
     'pages/saved/index',
     'pages/route-detail/index',

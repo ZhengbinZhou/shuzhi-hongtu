@@ -1,0 +1,53 @@
+.routes-page { background: #f5eddf; }
+.routes-hero { padding: 62rpx 38rpx 110rpx; color: #fff8eb; background: radial-gradient(circle at 86% 18%, rgba(218,174,99,.2), transparent 30%), #67151b; }
+.routes-hero > text { display: block; }
+.routes-hero > text:first-child { color: #d6a45b; font-size: 19rpx; letter-spacing: 4rpx; }
+.routes-hero > text:nth-child(2) { margin-top: 24rpx; font-family: "Songti SC", STSong, serif; font-size: 49rpx; font-weight: 700; line-height: 1.42; }
+.criteria-summary { margin-top: 26rpx; display: flex; flex-wrap: wrap; gap: 10rpx; }
+.criteria-summary text { padding: 8rpx 12rpx; color: rgba(255,248,235,.75); background: rgba(255,255,255,.08); font-size: 18rpx; }
+.replan-button { margin: 28rpx 0 0; padding: 0; color: #f1d39f; background: transparent; font-size: 21rpx; text-align: left; }
+.history-route-summary { margin: -62rpx 28rpx 30rpx; padding: 30rpx; position: relative; z-index: 2; display: flex; flex-wrap: wrap; gap: 20rpx; color: #fff8eb; background: #2c211e; border-left: 6rpx solid #b77f3f; }
+.history-route-summary > text { color: #d6a45b; font-family: Georgia, serif; font-size: 48rpx; }
+.history-route-summary > view { min-width: 0; flex: 1; }
+.history-route-summary > view > text { display: block; }
+.history-route-summary > view > text:first-child { color: #d6a45b; font-size: 17rpx; letter-spacing: 2rpx; }
+.history-route-summary > view > text:nth-child(2) { margin-top: 7rpx; font-family: "Songti SC", STSong, serif; font-size: 29rpx; font-weight: 700; }
+.history-route-summary > view > text:nth-child(3) { margin-top: 12rpx; color: rgba(255,248,235,.66); font-size: 19rpx; line-height: 1.65; }
+.history-route-summary > view > view { margin-top: 15rpx; display: flex; gap: 10rpx; color: #d9ae6f; font-size: 17rpx; }
+.history-route-summary > button { width: 100%; height: 68rpx; color: #5b1117; background: #d6a45b; font-size: 20rpx; }
+.routes-results { padding: 42rpx 28rpx 48rpx; }
+.history-route-summary + .routes-results { padding-top: 8rpx; }
+.results-kicker { display: block; margin-bottom: 28rpx; color: #851f25; font-size: 22rpx; font-weight: 600; letter-spacing: 3rpx; }
+.routes-empty { padding: 48rpx 36rpx; color: #fff8eb; background: #2c211e; }
+.routes-empty text { display: block; }
+.routes-empty text:first-child { font-family: "Songti SC", STSong, serif; font-size: 36rpx; font-weight: 700; }
+.routes-empty text:last-child { margin-top: 16rpx; color: rgba(255,248,235,.62); font-size: 22rpx; line-height: 1.7; }
+.plan-card { padding: 34rpx 28rpx 38rpx; color: #2d211d; background: #fffaf1; box-shadow: 0 18rpx 45rpx rgba(77,42,31,.1); }
+.plan-card + .plan-card { margin-top: 28rpx; }
+.plan-head { display: flex; align-items: flex-start; justify-content: space-between; }
+.plan-index { color: #b77f3f; font-family: Georgia, serif; font-size: 52rpx; }
+.plan-score { width: 96rpx; height: 96rpx; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #75171d; border: 2rpx solid #b77f3f; border-radius: 50%; }
+.plan-score text:first-child { font-family: Georgia, serif; font-size: 34rpx; font-weight: 700; }
+.plan-score text:last-child { font-size: 16rpx; }
+.plan-angle, .plan-name, .plan-reason { display: block; }
+.plan-angle { margin-top: 6rpx; color: #851f25; font-size: 20rpx; letter-spacing: 2rpx; }
+.plan-name { margin-top: 10rpx; font-family: "Songti SC", STSong, serif; font-size: 40rpx; font-weight: 700; line-height: 1.35; }
+.plan-reason { margin-top: 18rpx; color: #78675e; font-size: 23rpx; line-height: 1.75; }
+.plan-days { margin-top: 30rpx; border-top: 1rpx solid #ddcdb9; }
+.plan-day { padding-top: 28rpx; display: flex; gap: 24rpx; }
+.day-label { width: 80rpx; flex: 0 0 auto; display: flex; flex-direction: column; color: #851f25; font-family: Georgia, serif; }
+.day-label text:first-child { font-size: 16rpx; letter-spacing: 2rpx; }
+.day-label text:last-child { font-size: 38rpx; }
+.day-stops { flex: 1; }
+.day-stop { display: flex; align-items: flex-start; gap: 14rpx; }
+.day-stop + .day-stop { margin-top: 20rpx; }
+.day-stop > text { width: 34rpx; height: 34rpx; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; color: #fff8ec; background: #851f25; border-radius: 50%; font-family: Georgia, serif; font-size: 18rpx; }
+.day-stop view text { display: block; }
+.day-stop view text:first-child { font-size: 24rpx; font-weight: 600; line-height: 1.45; }
+.day-stop view text:last-child { margin-top: 5rpx; color: #9a877b; font-size: 19rpx; }
+.plan-card-actions { margin-top: 32rpx; padding-top: 26rpx; display: flex; gap: 14rpx; border-top: 1rpx solid #ddcdb9; }
+.plan-save-button, .plan-open-button { height: 78rpx; font-size: 22rpx; font-weight: 600; }
+.plan-save-button { width: 180rpx; color: #75171d; background: transparent; border: 1rpx solid #b89675; }
+.plan-saved-button { color: #75171d; background: #eadfce; }
+.plan-open-button { padding: 0 24rpx; flex: 1; display: flex; align-items: center; justify-content: space-between; color: #fff8eb; background: #75171d; }
+.plan-open-button text { color: #d9ae6f; }

@@ -38,13 +38,13 @@ test("home page presents real route and landmark content", () => {
   assert.doesNotMatch(home, /Hello\s*world/i);
 });
 
-test("planner page collects criteria and renders generated plans", () => {
+test("planner page collects criteria and opens the recommendation page", () => {
   const planner = readMini("src/pages/planner/index.tsx");
 
   assert.match(planner, /Picker/);
   assert.match(planner, /plannerDefaults/);
-  assert.match(planner, /generatePlans/);
-  assert.match(planner, /setPlans/);
+  assert.match(planner, /plannerQuery/);
+  assert.match(planner, /pages\/routes\/index/);
   assert.match(planner, /生成路线/);
 });
 

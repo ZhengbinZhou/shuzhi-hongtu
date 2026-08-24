@@ -14,6 +14,8 @@ const stagePresets: Record<string, Partial<PlannerCriteria>> = {
   'stage-04': { county: '于都县', days: 3, theme1: '长征文化', theme2: '革命精神', experience: '现场观察', purpose: '思政学习', travelMode: 'charter' }
 }
 
+const historyImage = (assetPath: string) => `/history/${assetPath.split('/').pop()}`
+
 export default function HistoryPage () {
   const [activeStageId, setActiveStageId] = useState(historyStages[0].id)
   const [openQuestion, setOpenQuestion] = useState('')
@@ -33,7 +35,15 @@ export default function HistoryPage () {
   useShareAppMessage(() => ({ title: `${stage.shortTitle}｜江西红色历史专题`, path: `/pages/history/index?stage=${stage.id}` }))
 
   const planStage = () => {
-    setPlannerPreset({ ...plannerDefaults(), ...stagePresets[stage.id] }, stage.shortTitle)
+    const historyContext = {
+      id: stage.id,
+      number: stage.number,
+      shortTitle: stage.shortTitle,
+      period: stage.period,
+      intro: stage.intro,
+      spotIds: stage.spotIds
+    }
+    setPlannerPreset({ ...plannerDefaults(), ...stagePresets[stage.id] }, historyContext)
     Taro.switchTab({ url: '/pages/planner/index' })
   }
   const openSpot = (spotId: string) => Taro.navigateTo({ url: `/pages/landmark-detail/index?spotId=${spotId}` })
@@ -65,7 +75,16 @@ export default function HistoryPage () {
         <Button className='tap-button history-plan-action' onClick={planStage}>规划本章路线 <Text>→</Text></Button>
       </View>
 
+      <View className='history-artwork-panel'>
+        <Image src={historyImage(stage.artwork)} mode='aspectFill' lazyLoad />
+        <View><Text>专题艺术图</Text><Text>{stage.artworkCaption}</Text><Text>{stage.mapStyle} · {stage.representative}</Text></View>
+      </View>
+
       <View className='history-map-wrap'>
+        <View className='history-relative-map'>
+          <View><Text>RELATIVE LOCATION</Text><Text>点位相对位置图</Text></View>
+          <Image src={historyImage(stage.mapImage)} mode='widthFix' lazyLoad />
+        </View>
         <RouteMap spots={stageSpots} title={`${stage.shortTitle} · 景点位置`} onSpotTap={(spot) => openSpot(spot.id)} />
         <View className='history-map-quote'><Text>“{stage.mapQuote}”</Text><Text>{stage.mapQuoteSource}</Text></View>
       </View>

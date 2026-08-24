@@ -31,6 +31,10 @@ export default defineConfig<'vite'>(async (merge) => {
         {
           from: 'src/assets/landmarks',
           to: 'dist/landmarks'
+        },
+        {
+          from: 'src/assets/history',
+          to: 'dist/history'
         }
       ],
       options: {

@@ -41,6 +41,15 @@ const openSpotLocation = (spot: Spot) => {
   }).catch(() => Taro.showToast({ title: '未能打开地图，请稍后重试', icon: 'none' }))
 }
 
+const openSpotDetails = (spot: Spot) => {
+  Taro.navigateTo({ url: `/pages/landmark-detail/index?spotId=${spot.id}` })
+}
+
+const sameRoute = (left: Plan, right: Plan) => (
+  left.id === right.id &&
+  left.spots.map((spot) => spot.id).join(',') === right.spots.map((spot) => spot.id).join(',')
+)
+
 function drawWrappedText (context: PosterContext, text: string, x: number, startY: number, maxWidth: number, lineHeight: number, maxLines = 3): number {
   const lines: string[] = []
   let current = ''
@@ -69,7 +78,7 @@ export default function RouteDetailPage () {
     setPlan(nextPlan)
     setActiveRoute(nextPlan)
     setCompletedIds(loadCompletedSpotIds(nextPlan))
-    setIsSaved(loadSavedRoutes().some((item) => item.plan.id === nextPlan.id))
+    setIsSaved(loadSavedRoutes().some((item) => sameRoute(item.plan, nextPlan)))
     Taro.setNavigationBarTitle({ title: nextPlan.name })
   })
 
@@ -115,10 +124,10 @@ export default function RouteDetailPage () {
     context.fillText('JIANGXI · RED MEMORY', 38, 48)
     context.setFillStyle('#fff8eb')
     context.setFontSize(38)
-    let y = drawWrappedText(context, plan.name, 38, 100, 520, 48, 2)
+    const titleBottom = drawWrappedText(context, plan.name, 38, 100, 520, 48, 2)
     context.setFillStyle('rgba(255,248,235,.72)')
     context.setFontSize(18)
-    y = drawWrappedText(context, plan.angle, 38, y + 12, 520, 28, 2)
+    drawWrappedText(context, plan.angle, 38, titleBottom + 12, 520, 28, 2)
     context.setFillStyle('#2d211d')
     context.setFontSize(24)
     context.fillText(`${plan.days.length} 天 · ${plan.spots.length} 个点位 · ${plan.score} 分匹配`, 38, 292)
@@ -219,7 +228,7 @@ export default function RouteDetailPage () {
       </View>
 
       <View className='route-map-wrap'>
-        <RouteMap spots={plan.spots} title='路线点位与行进顺序' onSpotTap={openSpotLocation} />
+        <RouteMap spots={plan.spots} title='路线点位与行进顺序' onSpotTap={openSpotDetails} />
       </View>
 
       <View className='travel-board'>

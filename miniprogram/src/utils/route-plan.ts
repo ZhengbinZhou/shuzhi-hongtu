@@ -87,6 +87,6 @@ export function replaceRouteSpot (plan: Plan, index: number, candidates: Spot[] 
 
 export function removeRouteSpot (plan: Plan, index: number): Plan {
   const current = plan.spots[index]
-  if (!current || current.core || plan.spots.length <= 2) return plan
+  if (!current || current.core) return plan
   return rebuildPlan(plan, plan.spots.filter((_, spotIndex) => spotIndex !== index))
 }

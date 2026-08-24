@@ -4,17 +4,14 @@ import { Button, Picker, Text, View } from '@tarojs/components'
 import {
   counties,
   experiences,
-  generatePlans,
   plannerDefaults,
+  plannerQuery,
   purposes,
   themeOptions,
   travelModes,
-  type Plan,
   type PlannerCriteria
 } from '@shared/domain'
-import { loadSavedRoutes, saveRoute, setActiveRoute } from '../../services/route-storage'
-import { takePlannerPreset } from '../../services/planner-preset'
-import { miniPlanPath } from '../../utils/route-link'
+import { takePlannerPreset, type HistoryPlannerContext } from '../../services/planner-preset'
 import './index.scss'
 
 type SelectorFieldProps = {
@@ -41,19 +38,13 @@ function SelectorField ({ label, note, value, range, onChange }: SelectorFieldPr
 
 export default function PlannerPage () {
   const [criteria, setCriteria] = useState<PlannerCriteria>(() => plannerDefaults())
-  const [plans, setPlans] = useState<Plan[]>([])
-  const [hasGenerated, setHasGenerated] = useState(false)
-  const [savedPlanIds, setSavedPlanIds] = useState<string[]>([])
-  const [presetLabel, setPresetLabel] = useState('')
+  const [historyContext, setHistoryContext] = useState<HistoryPlannerContext | null>(null)
 
   useDidShow(() => {
-    setSavedPlanIds(loadSavedRoutes().map((item) => item.plan.id))
     const preset = takePlannerPreset()
     if (preset) {
       setCriteria(preset.criteria)
-      setPlans([])
-      setHasGenerated(false)
-      setPresetLabel(preset.label)
+      setHistoryContext(preset.historyContext)
     }
   })
 
@@ -62,28 +53,8 @@ export default function PlannerPage () {
   }
 
   const createPlans = () => {
-    setPlans(generatePlans(
-      criteria.county,
-      criteria.startDate,
-      criteria.days,
-      criteria.theme1,
-      criteria.theme2,
-      criteria.experience,
-      criteria.purpose,
-      criteria.travelMode
-    ).slice(0, 3))
-    setHasGenerated(true)
-  }
-
-  const savePlan = (plan: Plan) => {
-    const saved = saveRoute(plan)
-    setSavedPlanIds(saved.map((item) => item.plan.id))
-    Taro.showToast({ title: '已保存到我的路线', icon: 'success' })
-  }
-
-  const openPlan = (plan: Plan) => {
-    setActiveRoute(plan)
-    Taro.navigateTo({ url: miniPlanPath(plan) })
+    const historyQuery = historyContext ? `&historyStage=${encodeURIComponent(historyContext.id)}` : ''
+    Taro.navigateTo({ url: `/pages/routes/index?${plannerQuery(criteria)}${historyQuery}` })
   }
 
   return (
@@ -94,10 +65,14 @@ export default function PlannerPage () {
         <Text className='planner-intro'>先校验开放日期与每日时长，再按主题和体验偏好挑选点位。</Text>
       </View>
 
-      {presetLabel && (
+      {historyContext && (
         <View className='planner-preset-note'>
-          <View><Text>历史专题已带入</Text><Text>{presetLabel} · 可继续调整条件后生成</Text></View>
-          <Text onClick={() => setPresetLabel('')}>×</Text>
+          <View>
+            <Text>历史专题 · 第 {historyContext.number} 章</Text>
+            <Text>{historyContext.shortTitle}</Text>
+            <Text>{historyContext.period} · {historyContext.spotIds.length} 个专题点位将随条件进入推荐页</Text>
+          </View>
+          <Text onClick={() => setHistoryContext(null)}>×</Text>
         </View>
       )}
 
@@ -182,60 +157,12 @@ export default function PlannerPage () {
         </Button>
       </View>
 
-      <View className='plan-results' id='plan-results'>
-        {!hasGenerated && (
-          <View className='result-placeholder'>
-            <Text>03 / YOUR JOURNEY</Text>
-            <Text>你的路线会从这里展开</Text>
-            <Text>完成上方选择并生成，我们会给出最多 3 条差异化方案。</Text>
-          </View>
-        )}
-
-        {hasGenerated && plans.length === 0 && (
-          <View className='result-placeholder'>
-            <Text>暂无可行路线</Text>
-            <Text>当前条件过于紧凑，请增加游览天数或调整出发日期。</Text>
-          </View>
-        )}
-
-        {plans.length > 0 && (
-          <View className='results-inner'>
-            <Text className='results-kicker'>为你找到 {plans.length} 条可行路线</Text>
-            {plans.map((plan, planIndex) => (
-              <View className='plan-card' key={plan.id}>
-                <View className='plan-head'>
-                  <Text className='plan-index'>0{planIndex + 1}</Text>
-                  <View className='plan-score'><Text>{plan.score}</Text><Text>综合匹配</Text></View>
-                </View>
-                <Text className='plan-angle'>{plan.angle}</Text>
-                <Text className='plan-name'>{plan.name}</Text>
-                <Text className='plan-reason'>{plan.reason}</Text>
-
-                <View className='plan-days'>
-                  {plan.days.map((day, dayIndex) => (
-                    <View className='plan-day' key={`${plan.id}-${dayIndex}`}>
-                      <View className='day-label'><Text>DAY</Text><Text>0{dayIndex + 1}</Text></View>
-                      <View className='day-stops'>
-                        {day.map((spot, stopIndex) => (
-                          <View className='day-stop' key={spot.id}>
-                            <Text>{stopIndex + 1}</Text>
-                            <View><Text>{spot.name}</Text><Text>{spot.region} · 建议 {spot.minutes} 分钟</Text></View>
-                          </View>
-                        ))}
-                      </View>
-                    </View>
-                  ))}
-                </View>
-                <View className='plan-card-actions'>
-                  <Button className={`tap-button plan-save-button ${savedPlanIds.includes(plan.id) ? 'plan-saved-button' : ''}`} onClick={() => savePlan(plan)}>
-                    {savedPlanIds.includes(plan.id) ? '已保存' : '保存路线'}
-                  </Button>
-                  <Button className='tap-button plan-open-button' onClick={() => openPlan(plan)}>查看行程 <Text>→</Text></Button>
-                </View>
-              </View>
-            ))}
-          </View>
-        )}
+      <View className='plan-results'>
+        <View className='result-placeholder'>
+          <Text>03 / YOUR JOURNEY</Text>
+          <Text>五条路线，进入推荐页比较</Text>
+          <Text>完成上方选择后，将在独立页面展示最多 5 条差异化方案。</Text>
+        </View>
       </View>
     </View>
   )

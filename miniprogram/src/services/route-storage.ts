@@ -27,8 +27,8 @@ export function saveRoute (plan: Plan): SavedRoute[] {
   return next
 }
 
-export function removeRoute (planId: string): SavedRoute[] {
-  const next = removeSavedRoute(loadSavedRoutes(), planId)
+export function removeRoute (savedId: string): SavedRoute[] {
+  const next = removeSavedRoute(loadSavedRoutes(), savedId)
   Taro.setStorageSync(SAVED_ROUTES_KEY, next)
   return next
 }

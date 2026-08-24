@@ -60,7 +60,7 @@ const planFixture = (id = "plan-1") => ({
   feasible: true,
 });
 
-test("route state safely validates, deduplicates and limits saved routes", async () => {
+test("route state safely validates, versions and limits saved routes", async () => {
   const state = await bundleModule(
     path.join(miniRoot, "src/utils/route-state.ts"),
     stateBundle,
@@ -69,9 +69,9 @@ test("route state safely validates, deduplicates and limits saved routes", async
   assert.deepEqual(state.parseSavedRoutes(null), []);
   assert.deepEqual(state.parseSavedRoutes([{ plan: { id: "broken" } }]), []);
 
-  const first = state.upsertSavedRoute([], planFixture(), "2026-08-24T10:00:00.000Z");
-  const updated = state.upsertSavedRoute(first, { ...planFixture(), name: "更新后的路线" }, "2026-08-24T11:00:00.000Z");
-  assert.equal(updated.length, 1);
+  const first = state.upsertSavedRoute([], planFixture(), "2026-08-24T10:00:00.000Z", "saved-1");
+  const updated = state.upsertSavedRoute(first, { ...planFixture(), name: "更新后的路线" }, "2026-08-24T11:00:00.000Z", "saved-2");
+  assert.equal(updated.length, 2);
   assert.equal(updated[0].plan.name, "更新后的路线");
 
   let many = [];
@@ -79,7 +79,7 @@ test("route state safely validates, deduplicates and limits saved routes", async
     many = state.upsertSavedRoute(many, planFixture(`plan-${index}`), `2026-08-24T${String(index).padStart(2, "0")}:00:00.000Z`);
   }
   assert.equal(many.length, 12);
-  assert.equal(state.removeSavedRoute(many, "plan-13").some((item) => item.plan.id === "plan-13"), false);
+  assert.equal(state.removeSavedRoute(many, many[0].id).some((item) => item.id === many[0].id), false);
 });
 
 test("route progress counts unique valid completed spots", async () => {
@@ -114,8 +114,8 @@ test("phase four registers saved routes and route detail pages", () => {
   assert.match(appConfig, /text:\s*['"]我的['"]/);
 });
 
-test("planner can save and open a generated route", () => {
-  const planner = readMini("src/pages/planner/index.tsx");
+test("recommendation page can save and open a generated route", () => {
+  const planner = readMini("src/pages/routes/index.tsx");
 
   assert.match(planner, /saveRoute/);
   assert.match(planner, /setActiveRoute/);

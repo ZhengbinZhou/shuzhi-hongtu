@@ -46,6 +46,24 @@
   height: 390rpx;
 }
 
+.route-map-coverage {
+  padding: 18rpx 26rpx;
+  display: flex;
+  justify-content: space-between;
+  gap: 18rpx;
+  color: #fff8eb;
+  background: #67151b;
+  font-size: 17rpx;
+}
+
+.route-map-coverage text:first-child {
+  color: #d6a45b;
+}
+
+.route-map-coverage text:last-child {
+  text-align: right;
+}
+
 .route-map-legend {
   padding: 22rpx 26rpx 26rpx;
   display: flex;
