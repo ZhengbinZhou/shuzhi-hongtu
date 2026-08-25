@@ -2,213 +2,213 @@
   "_meta": {
     "description": "点位间公路车程缓存。键为两个点位 id 用 | 连接，按字典序排序（无向）。由 scripts/precompute-travel.mjs 生成。",
     "source": "tianditu-driving",
-    "updated": "2026-08-21",
+    "updated": "2026-08-25",
     "unit": "minutes/公里",
     "note": "浏览器端 Key 无法调用驾车 WebService（返回 301012 权限类型错误）；预缓存需到天地图控制台另申请「服务端」类型 Key。",
     "stats": {
       "spots": 44,
       "pairs": 946,
-      "failed": 0
+      "failed": 18
     }
   },
   "pairs": {
     "J01|J02": {
-      "km": 2.5,
+      "km": 2.2,
       "minutes": 5,
       "source": "tianditu-driving"
     },
     "J01|J03": {
-      "km": 1,
+      "km": 0.7,
       "minutes": 2,
       "source": "tianditu-driving"
     },
     "J01|J04": {
-      "km": 19.1,
-      "minutes": 24,
+      "km": 18.7,
+      "minutes": 23,
       "source": "tianditu-driving"
     },
     "J01|J05": {
-      "km": 55.8,
+      "km": 55.4,
       "minutes": 70,
       "source": "tianditu-driving"
     },
     "J01|J06": {
-      "km": 17.1,
+      "km": 16.8,
       "minutes": 20,
       "source": "tianditu-driving"
     },
     "J01|J07": {
-      "km": 8.7,
+      "km": 8.4,
       "minutes": 11,
       "source": "tianditu-driving"
     },
     "J01|J08": {
-      "km": 32.8,
+      "km": 32.4,
       "minutes": 42,
       "source": "tianditu-driving"
     },
     "J01|J09": {
-      "km": 53.2,
+      "km": 52.8,
       "minutes": 68,
       "source": "tianditu-driving"
     },
     "J01|J10": {
-      "km": 78.8,
+      "km": 78.4,
       "minutes": 107,
       "source": "tianditu-driving"
     },
     "J01|Y01": {
-      "km": 214.3,
-      "minutes": 230,
+      "km": 213.3,
+      "minutes": 228,
       "source": "tianditu-driving"
     },
     "J01|Y02": {
-      "km": 214.6,
-      "minutes": 230,
+      "km": 213.6,
+      "minutes": 229,
       "source": "tianditu-driving"
     },
     "J01|Y03": {
-      "km": 214.5,
-      "minutes": 230,
+      "km": 213.5,
+      "minutes": 229,
       "source": "tianditu-driving"
     },
     "J01|Y04": {
-      "km": 214.3,
-      "minutes": 230,
+      "km": 213.3,
+      "minutes": 228,
       "source": "tianditu-driving"
     },
     "J01|Y05": {
-      "km": 213.4,
-      "minutes": 241,
+      "km": 212.4,
+      "minutes": 239,
       "source": "tianditu-driving"
     },
     "J01|Y06": {
-      "km": 218.3,
-      "minutes": 242,
+      "km": 217.3,
+      "minutes": 240,
       "source": "tianditu-driving"
     },
     "J01|Y07": {
-      "km": 216.6,
-      "minutes": 238,
+      "km": 215.6,
+      "minutes": 236,
       "source": "tianditu-driving"
     },
     "J01|Y08": {
-      "km": 232.5,
-      "minutes": 261,
+      "km": 231.5,
+      "minutes": 259,
       "source": "tianditu-driving"
     },
     "J01|Y09": {
-      "km": 215.7,
-      "minutes": 220,
+      "km": 214.7,
+      "minutes": 218,
       "source": "tianditu-driving"
     },
     "J01|Y10": {
-      "km": 242.3,
-      "minutes": 246,
+      "km": 241.3,
+      "minutes": 244,
       "source": "tianditu-driving"
     },
     "J01|R01": {
-      "km": 291.7,
-      "minutes": 264,
-      "source": "tianditu-driving"
-    },
-    "J01|R02": {
-      "km": 277.6,
-      "minutes": 262,
-      "source": "tianditu-driving"
-    },
-    "J01|R03": {
-      "km": 278.1,
-      "minutes": 262,
-      "source": "tianditu-driving"
-    },
-    "J01|R04": {
-      "km": 280.1,
-      "minutes": 268,
-      "source": "tianditu-driving"
-    },
-    "J01|R05": {
-      "km": 278.8,
-      "minutes": 265,
-      "source": "tianditu-driving"
-    },
-    "J01|R06": {
-      "km": 278.9,
+      "km": 290.7,
       "minutes": 263,
       "source": "tianditu-driving"
     },
+    "J01|R02": {
+      "km": 276.6,
+      "minutes": 260,
+      "source": "tianditu-driving"
+    },
+    "J01|R03": {
+      "km": 277.1,
+      "minutes": 261,
+      "source": "tianditu-driving"
+    },
+    "J01|R04": {
+      "km": 279.1,
+      "minutes": 266,
+      "source": "tianditu-driving"
+    },
+    "J01|R05": {
+      "km": 277.8,
+      "minutes": 263,
+      "source": "tianditu-driving"
+    },
+    "J01|R06": {
+      "km": 277.9,
+      "minutes": 262,
+      "source": "tianditu-driving"
+    },
     "J01|N01": {
-      "km": 334.3,
+      "km": 333.9,
       "minutes": 239,
       "source": "tianditu-driving"
     },
     "J01|N02": {
-      "km": 336.8,
+      "km": 336.4,
       "minutes": 242,
       "source": "tianditu-driving"
     },
     "J01|N03": {
-      "km": 333.4,
+      "km": 333,
       "minutes": 236,
       "source": "tianditu-driving"
     },
     "J01|N04": {
-      "km": 335.5,
+      "km": 335.1,
       "minutes": 241,
       "source": "tianditu-driving"
     },
     "A01|J01": {
-      "km": 204,
+      "km": 203.6,
       "minutes": 253,
       "source": "tianditu-driving"
     },
     "A02|J01": {
-      "km": 203.5,
+      "km": 203.1,
       "minutes": 253,
       "source": "tianditu-driving"
     },
     "A03|J01": {
-      "km": 199.2,
+      "km": 198.8,
       "minutes": 246,
       "source": "tianditu-driving"
     },
     "J01|S01": {
-      "km": 516.7,
+      "km": 516.3,
       "minutes": 351,
       "source": "tianditu-driving"
     },
     "J01|S02": {
-      "km": 517.1,
+      "km": 516.7,
       "minutes": 352,
       "source": "tianditu-driving"
     },
     "J01|S03": {
-      "km": 469,
+      "km": 468.6,
       "minutes": 320,
       "source": "tianditu-driving"
     },
     "J01|XG1": {
-      "km": 187.1,
+      "km": 186.7,
       "minutes": 163,
       "source": "tianditu-driving"
     },
     "J01|XG2": {
-      "km": 182.5,
+      "km": 182.1,
       "minutes": 162,
       "source": "tianditu-driving"
     },
     "J01|XG3": {
-      "km": 185.4,
-      "minutes": 162,
+      "km": 185.1,
+      "minutes": 161,
       "source": "tianditu-driving"
     },
     "J01|ND1": {
-      "km": 248.1,
+      "km": 247.8,
       "minutes": 189,
       "source": "tianditu-driving"
     },
     "J01|ND2": {
-      "km": 272.1,
+      "km": 271.7,
       "minutes": 213,
       "source": "tianditu-driving"
     },
@@ -768,17 +768,17 @@
       "source": "tianditu-driving"
     },
     "J01|XW1": {
-      "km": 367.6,
-      "minutes": 321,
+      "km": 366.5,
+      "minutes": 320,
       "source": "tianditu-driving"
     },
     "J01|XW2": {
-      "km": 367.9,
-      "minutes": 322,
+      "km": 366.9,
+      "minutes": 320,
       "source": "tianditu-driving"
     },
     "J01|LS1": {
-      "km": 504.6,
+      "km": 504.3,
       "minutes": 392,
       "source": "tianditu-driving"
     },
