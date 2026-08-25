@@ -10,17 +10,20 @@
 //   QPS=3                 限速（默认 3，天地图对个人 Key 较保守）
 //   FORCE=1               忽略已有缓存，全量重算
 //   LIMIT=20              只算前 N 对（调试用）
+//   GEOMETRY=1            同时把道路路线几何写入 data/route-geometry.json（解析 routelatlon）
 //
 // 说明：
-// - 无向矩阵（A->B ≈ B->A），100 个点约 4950 对，3 QPS 约半小时。
+// - 无向矩阵（A->B ≈ B->A），36 个点约 630 对，3 QPS 约 4 分钟。
 // - 只缓存公路车程；跨市公共交通见 data/intercity-transit.json，手工维护。
 // - 红色步道（挑粮小道/祁禄山等）路网不覆盖，由点位 minutes 字段手工维护，不在此列。
-// - 失败自动重试 3 次；仍失败则保留直线估算兜底，不中断整体流程。
+// - 失败自动重试 4 次；仍失败则保留直线估算兜底，不中断整体流程。
 //
 // 天地图驾车 WebService（服务端 Key）：
 //   https://api.tianditu.gov.cn/drive?postStr={orig,dest,style}&type=search&tk=KEY
-// 返回 XML，关键字段在末尾：<distance>公里</distance> <duration>秒</duration>
-// 注意：type=json 仍返回 XML，必须解析 XML。
+// 返回 XML，关键字段在末尾：
+//   <distance>公里</distance> <duration>秒</duration> <routelatlon>lng,lat;...</routelatlon>
+// 注意：type=json 仍返回 XML，必须解析 XML。routelatlon 坐标分隔符历史版本有
+// 逗号/分号两种，解析时两种都兼容。
 
 import fs from "node:fs";
 import path from "node:path";
@@ -30,6 +33,7 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(scriptDir, "..");
 const dataPath = path.join(root, "lib/platform-data.ts");
 const matrixPath = path.join(root, "data/distance-matrix.json");
+const geometryPath = path.join(root, "data/route-geometry.json");
 
 const TK =
   process.env.VITE_TIANDITU_TK ||
@@ -38,6 +42,7 @@ const TK =
 const QPS = Number(process.env.QPS || 3);
 const FORCE = process.env.FORCE === "1";
 const LIMIT = process.env.LIMIT ? Number(process.env.LIMIT) : Infinity;
+const GEOMETRY = process.env.GEOMETRY === "1";
 
 if (!TK) {
   console.error(
@@ -48,10 +53,8 @@ if (!TK) {
 }
 
 // ---------- 1. 从平台数据文件提取点位坐标 ----------
-// spots 目前集中在 lib/platform-data.ts；预计算脚本只需要 id/region/lat/lng。
 function extractSpots(source) {
   const spots = [];
-  // 匹配每个点位对象块：{id:"...",name:"...",...}
   const re = /\{id:"([^"]+)"[^}]*?region:"([^"]+)"[^}]*?lat:([\d.]+),lng:([\d.]+)[^}]*?\}/g;
   let m;
   while ((m = re.exec(source))) {
@@ -85,15 +88,23 @@ console.log(`[precompute] 共 ${pairs.length} 对（无向）`);
 // ---------- 3. 读取现有矩阵（增量） ----------
 const matrix = JSON.parse(fs.readFileSync(matrixPath, "utf8"));
 matrix.pairs = matrix.pairs || {};
+let geometry = { pairs: {} };
+if (GEOMETRY && fs.existsSync(geometryPath)) {
+  try {
+    geometry = JSON.parse(fs.readFileSync(geometryPath, "utf8"));
+    geometry.pairs = geometry.pairs || {};
+  } catch {
+    geometry = { pairs: {} };
+  }
+}
 let skipped = 0;
 
 // ---------- 4. 调用天地图驾车规划 ----------
-// 字段以官方文档为准；此处做防御式解析。
 async function fetchDriving(a, b) {
   const postStr = JSON.stringify({
     orig: `${a.lng},${a.lat}`,
     dest: `${b.lng},${b.lat}`,
-    style: 0, // 0 推荐路线
+    style: 0,
   });
   const url = `https://api.tianditu.gov.cn/drive?postStr=${encodeURIComponent(
     postStr,
@@ -110,9 +121,6 @@ async function fetchDriving(a, b) {
       }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const text = await res.text();
-      // 天地图驾车接口固定返回 XML（即使带 type=json），总距离/时长在末尾：
-      //   <distance>2.54</distance>  单位：公里
-      //   <duration>291.0</duration>  单位：秒
       const distMatch = text.match(/<distance>([\d.]+)<\/distance>/);
       const durMatch = text.match(/<duration>([\d.]+)<\/duration>/);
       if (!distMatch || !durMatch) {
@@ -129,13 +137,29 @@ async function fetchDriving(a, b) {
       if (!Number.isFinite(km) || !Number.isFinite(seconds)) {
         throw new Error(`distance/duration 非数字: ${distMatch[1]}, ${durMatch[1]}`);
       }
+      let points = null;
+      if (GEOMETRY) {
+        const geomMatch = text.match(/<routelatlon>([\s\S]*?)<\/routelatlon>/);
+        if (geomMatch) {
+          points = geomMatch[1]
+            .split(";")
+            .map((seg) => seg.trim())
+            .filter(Boolean)
+            .map((seg) => {
+              const parts = seg.split(/[,\s]+/).filter(Boolean).map(Number);
+              return parts.length >= 2 ? [parts[0], parts[1]] : null;
+            })
+            .filter((p) => p && Number.isFinite(p[0]) && Number.isFinite(p[1]));
+          if (points.length < 2) points = null;
+        }
+      }
       return {
         km: Math.round(km * 10) / 10,
         minutes: Math.round(seconds / 60),
+        ...(points ? { points } : {}),
       };
     } catch (e) {
       lastErr = e;
-      // 限流：指数退避，等更久
       const backoff = e?.rateLimited ? 2000 * attempt : 800 * attempt;
       await new Promise((r) => setTimeout(r, backoff));
     }
@@ -158,12 +182,14 @@ let failed = 0;
 let consecutiveFail = 0;
 const todo = FORCE ? pairs : pairs.filter(([a, b]) => {
   const key = [a.id, b.id].sort().join("|");
-  if (matrix.pairs[key]) { skipped++; return false; }
+  const hasMatrix = !!matrix.pairs[key];
+  const needGeometry = GEOMETRY && !geometry.pairs[key];
+  if (hasMatrix && !needGeometry) { skipped++; return false; }
   return true;
 });
 const run = todo.slice(0, LIMIT);
 console.log(
-  `[precompute] 待计算 ${run.length} 对（已跳过缓存 ${skipped} 对），QPS=${QPS}`,
+  `[precompute] 待计算 ${run.length} 对（已跳过缓存 ${skipped} 对），QPS=${QPS}${GEOMETRY ? "，GEOMETRY=1" : ""}`,
 );
 
 function save(partial = false) {
@@ -177,6 +203,18 @@ function save(partial = false) {
     stats: { spots: spots.length, pairs: Object.keys(matrix.pairs).length, failed },
   };
   fs.writeFileSync(matrixPath, JSON.stringify(matrix, null, 2) + "\n", "utf8");
+  if (GEOMETRY) {
+    geometry._meta = {
+      ...(geometry._meta || {}),
+      description:
+        "点位间真实道路路线几何缓存。键为两个点位 id 用 | 连接，按字典序排序（无向）。points 为 [lng, lat] 坐标序列。前端命中即同步绘制，未命中则在线 T.DrivingRoute 兜底。",
+      source: partial ? "tianditu-driving (partial)" : "tianditu-driving",
+      updated: new Date().toISOString().slice(0, 10),
+      coordinates: "天地图驾车 WebService routelatlon，经纬度",
+      stats: { spots: spots.length, pairs: Object.keys(geometry.pairs).length },
+    };
+    fs.writeFileSync(geometryPath, JSON.stringify(geometry, null, 2) + "\n", "utf8");
+  }
 }
 
 for (const [a, b] of run) {
@@ -184,7 +222,18 @@ for (const [a, b] of run) {
   const key = [a.id, b.id].sort().join("|");
   try {
     const r = await fetchDriving(a, b);
-    matrix.pairs[key] = { ...r, source: "tianditu-driving" };
+    const { points, ...travel } = r;
+    matrix.pairs[key] = { ...travel, source: "tianditu-driving" };
+    if (GEOMETRY && points) {
+      geometry.pairs[key] = {
+        points: points.map(([lng, lat]) => [
+          Number(Number(lng).toFixed(6)),
+          Number(Number(lat).toFixed(6)),
+        ]),
+        km: travel.km,
+        minutes: travel.minutes,
+      };
+    }
     done++;
     consecutiveFail = 0;
     if (done % 10 === 0) {
@@ -195,7 +244,6 @@ for (const [a, b] of run) {
     failed++;
     consecutiveFail++;
     process.stdout.write(`  [跳过] ${a.id}->${b.id}：${e.message || e}\n`);
-    // 连续失败过多（通常是限流/Key 问题），提前退出并保存已有进度
     if (consecutiveFail >= 10) {
       process.stdout.write("  [中止] 连续 10 次失败，疑似限流或 Key 问题，已保存进度。\n");
       break;
@@ -209,3 +257,8 @@ console.log(
     Object.keys(matrix.pairs).length
   } → ${path.relative(root, matrixPath)}`,
 );
+if (GEOMETRY) {
+  console.log(
+    `[precompute] 几何缓存 ${Object.keys(geometry.pairs).length} 对 → ${path.relative(root, geometryPath)}`,
+  );
+}
